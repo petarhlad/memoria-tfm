@@ -1,0 +1,154 @@
+\documentclass[12pt,a4paper,twoside,openright]{book}
+
+\input{config/config.tex}
+\usepackage[backend=bibtex]{biblatex}
+\bibliography{parts/bibliography.bib}
+\usepackage{pdfpages}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\newcommand{\titol}{Anonymous threshold signatures}
+\newcommand{\shortitol}{Anonymous threshold signatures}
+\newcommand{\autor}{Petar Hlad Colic}
+\renewcommand{\cleardoublepage}{}
+
+% PÀGINA INICIAL
+\frontmatter
+%\pagenumbering{Roman}
+\begin{titlepage}
+   	\includegraphics[scale=1]{images/logoUPC.jpg}
+   	\hfill
+   	\includegraphics[scale=0.6]{images/logoFME.jpg}\\
+
+   	\begin{center}
+   	\vspace{1em}
+   	\LARGE\textbf{\MakeUppercase{\titol}} \\
+   	\vspace{2em}
+   	\large\textit{\textbf{A master's thesis}}\\
+   	\large\textit{\textbf{Submitted to the}}\\
+   	\vspace{0.5em}
+   	\Large\textbf{Facultat de Matem\`atiques i Estad\'istica}\\
+   	\vspace{0.5em}
+   	\Large\textbf{Universitat Politècnica de Catalunya}\\
+   	\vspace{1em}
+   	\large\textit{\textbf{By}}\\
+   	\LARGE\textbf{\autor}\\
+   	\vspace{2em}
+   	\large\textit{\textbf{In partial fulfillment}}\\
+   	\large\textit{\textbf{of the requirements for the master's degree in}}\\
+   	\vspace{0.5em}
+   	\Large\textbf{Advanced Mathematics and Mathematical Engineering}\\
+   	\vspace{4em}
+   	\Large\textbf{Advisor: Javier Herranz Sotoca}\\
+   	\vspace{3em}
+   	\large\textbf{Barcelona, October 2017}\\
+   	\end{center}
+\end{titlepage} 
+%\pagestyle{plain}
+\newpage\null\thispagestyle{empty}\newpage
+\newpage{\cleardoublepage}
+%ABSTRACT
+%\thispagestyle{plain}
+%\addcontentsline{toc}{section}{Abstract}
+\input{parts/abstract}
+\newpage{\cleardoublepage}
+
+%% Discomment for "thanks" page.
+%\thispagestyle{plain}
+%\input{parts/thanks}
+%\newpage{\cleardoublepage}
+
+%% Acknowledgements
+%\thispagestyle{plain}
+%\addcontentsline{toc}{section}{Acknowledgements}
+\newpage\null\thispagestyle{empty}\newpage
+\input{parts/acknowledgements}
+\newpage{\cleardoublepage}
+\newpage\null\thispagestyle{empty}\newpage
+{\tableofcontents
+\newpage{\cleardoublepage}
+
+% To force the figures to appear:
+\setcounter{tocdepth}{2}
+%\addcontentsline{toc}{section}{List of Figures}
+\setcounter{tocdepth}{2}
+\listoffigures
+\newpage{\cleardoublepage}
+
+%\addcontentsline{toc}{section}{List of Tables}
+\newpage\null\thispagestyle{empty}\newpage
+\listoftables
+\newpage{\cleardoublepage}
+\newpage\null\thispagestyle{empty}\newpage
+%\thispagestyle{plain}
+%\addcontentsline{toc}{section}{Nomenclature}
+%\printnomenclature
+%\newpage{\cleardoublepage}
+
+\clearpage
+\pagestyle{fancy}
+\setlength{\parskip}{3mm plus1mm minus1.5mm}
+%\thispagestyle{empty}
+%\pagenumbering{arabic}
+\mainmatter
+\input{parts/intro}
+
+\newpage{\cleardoublepage}
+\newpage\null\thispagestyle{empty}\newpage
+\input{parts/preliminaries}
+
+\newpage{\cleardoublepage}
+%\newpage\null\thispagestyle{empty}\newpage
+\input{parts/single_use}
+\newpage{\cleardoublepage}
+\newpage\null\thispagestyle{empty}\newpage
+\input{parts/multiple_use}
+%\newpage{\cleardoublepage}
+%\newpage\null\thispagestyle{empty}\newpage
+%\input{parts/software}
+%\newpage\null\thispagestyle{empty}\newpage
+%\newpage{\cleardoublepage}
+%\input{parts/hardware}
+%\newpage{\cleardoublepage}
+%\input{parts/results}
+%\newpage{\cleardoublepage}
+%\input{parts/budget}
+\newpage\null\thispagestyle{empty}\newpage
+\newpage{\cleardoublepage}
+\input{parts/conclusions}
+\newpage{\cleardoublepage}
+\printbibliography
+\newpage\null\thispagestyle{empty}\newpage
+\cleardoublepage
+\newpage
+\appendix
+\pretocmd{\chapter}{%
+  \clearpage
+  \pagenumbering{arabic}%
+  \renewcommand*{\thepage}{\thechapter\arabic{page}}%
+}{}{}
+\clearpage
+\addcontentsline{toc}{chapter}{Apèndixs}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+%\input{appendix/appendix_gantt}
+%\newpage{\cleardoublepage}
+%\input{appendix/appendix_uml}
+%\newpage\null\thispagestyle{empty}\newpage
+%\newpage{\cleardoublepage}
+%\input{appendix/appendix_budget}
+%\newpage{\cleardoublepage}
+%\input{appendix/appendix_documentation}
+%\newpage{\cleardoublepage}
+%\input{appendix/appendix_video}
+%\newpage{\cleardoublepage}
+\setcounter{tocdepth}{2}
+
+%\input{appendix/appendix_blender}
+
+%\newpage
+%\annex
+%\clearpage
+%\addcontentsline{toc}{chapter}{Anexes}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+
+
+\end{document}
