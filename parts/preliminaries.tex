@@ -25,6 +25,8 @@ Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Le
 
 \end{enumerate}
 
+\defn A gap group is a group on which the DDH problem is easy but the CDH is hard.
+
 \newpage
 
 \section{Homomorphic PKE}
@@ -71,7 +73,8 @@ Check $g^{H(m)} = y^r r^s$
 The use of $H( \cdot )$ prevents an existential forgery attack.
 
 \subsubsection{Boneh-Lynn-Shacham (BLS)}
-Let $G,G_T$ be groups of prime order $p$. Let $g$ be a generator of $G$. Let $e:G \times G \rightarrow G_T$ be a non-degenerate bilinear pairing.
+\cite{BonehLS01}
+Let $G,G_T$ be (¿gap?) groups of prime order $p$. Let $g$ be a generator of $G$. Let $e:G \times G \rightarrow G_T$ be a non-degenerate bilinear pairing.
 \paragraph{Key Generation}
 
 Randomly choose a secret key $x \in \ZZ_p$. The public key will be $y = g^x$.
@@ -97,7 +100,7 @@ Some group signatures need what is called a Dealer, which will deal with the key
 
 Examples of Group signatures:
 
-\section{Shamir secret Sharing}
+\section{Shamir Secret Sharing}
 Shamir secret sharing described in \cite{Sham79}.
 
 The scheme is based on polynomial interpolation.
@@ -113,6 +116,8 @@ Then, each participant $i$ is given the share $y_i = q(x_i)$.
 
 To recover the secret, we only need $k$ different shares. Let $P \subset \PP$ be any subset of $k$ participants. Then
 
+Let $\lambda_i^{P} = \prod_{P_j \in (P \setminus P_i)} \frac{-x_i}{x_i - x_j}$
+
 $$
     q(x) = \sum_{i \in P} y_i \prod_{\substack{j \in P \\ i \neq j}} \frac{x-x_j}{x_i-x_j}
 $$
@@ -121,6 +126,25 @@ Then, $s = q(0)$.
 
 \section{Threshold signature scheme using Shamir}
 
+This signature scheme will be based on the BLS scheme.
+
+Let $G$ be a gap group of some prime order $p$. Let $g \in G$ be a generator of the group.
+
+Let $\mathcal{P}= \{ 1, \dots , n \}$ be the set of participants in this scheme. Supose every participant $P_i \in \mathcal{P}$ is given a distinct random number $x_i \in \ZZ_p$ as in the Shamir Secret Sharing Scheme.
+
+Let $SK \in \ZZ_p$ be the secret key of the scheme. Let $q(x) = \sum_{i=0}^{k-1} a_i x^i$ be a random polynomial of degree $k-1$ but fixing $a_0 = SK$.
+
+Each participant $P_i$ is given the share $s_i = q(x_i)$.
+
+So $$SK = \sum_{i \in P} s_i \lambda_i^P$$
+
+To sign a message $m$, each participant $P_i$ computes his partial signature $\sigma_i (m) = H(m)^{s_i}$ and broadcasts de pair $(x_i, \ \sigma_i (m))$.
+
+Then, after a set $P$ of at least $t$ participants has broadcast their partial signatures for the message, a standard signature $\sigma$ can be computed:
+
+$$ \sigma (m) = \prod_{P_i \in P} \sigma_i (m)^{\lambda_i^{P}}= H(m)^{\sum_{P_i \in P} \lambda_i^P s_i} = H(m)^{SK}$$
+
+The signature is valid if $e(\sigma, g) = e(H(m), PK)$
 
 \section{Anonymity}
 The concept of anonimity is used in so many ways
@@ -130,5 +154,5 @@ You could use ring signatures which proofs the knowledge of a 1-out-of-N secret 
 A signature scheme provides anonymity if:
 \begin{itemize}
     \item Unlinkability: cannot decide whether two different signatures were signed by the same user.
-    \item 
+    \item Untraceability: cannot get the public key of the signer from a valid signature.
 \end{itemize}

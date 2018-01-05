@@ -1,5 +1,5 @@
 \chapter{Multiple use: Anonymity and Non-traceability}
-
+To achieve full anonymity we need some 
 Multiple use \cite{ChenNW11}
 \cite{DazaDSV09}
 
@@ -47,12 +47,47 @@ $$
 \end{figure}
 
 \begin{figure}[H]
-$$\begin{array}{cc}
+$$\begin{array}{l}
 \text{Signer}(\mathfrak{s}) \\
-
+\hline
+\text{Input: } f \in \ZZ_q; \ n_T \leftarrow \{0,1\}^\ast; \ msg \\
+a \in_R \ZZ_q; \ z \in_R \ZZ_q \\
+J \leftarrow H_1(\text{msgt}); \ K = J^f; \ L = J^z \\
+R = A^a; \ S = B^a; \ T = C^a; \ \tau = \hat{t}(S,X)^z \\
+c \leftarrow H_0(R \parallel S \parallel T \parallel \tau \parallel J \parallel K \parallel L \parallel n_T \parallel \text{msgb}) \\
+s \leftarrow z + c \cdot f \mod q \\
+\sigma \leftarrow (R,S,T,J,K,c,s,n_T) \\
+\text{Output: } \sigma \\
 \hline
 \end{array}
 $$
 \caption{The Sign Algorithm}
 \label{fig:sign}
 \end{figure}
+
+\begin{figure}[H]
+$$\begin{array}{l}
+\text{Verifier}(\mathfrak{v}) \\
+\hline
+\text{Input: \textbf{ipk}}_k = (X,Y); \ \text{msg} = (\text{msgt}, \text{msgb}) \\
+\sigma = (R,S,T,J,K,c,s,n_T) \\
+\text{If } K = J^{f_i}, \text{ for any } f_i \text{in the set of rogue secret keys, or} \\
+\qquad \hat{t}(R,Y) \neq \hat{t}(S,g_2), \text{ or} \\
+\qquad J \neq H_1(\text{msgt}) \text{ return \textbf{reject}} \\
+\rho_a^\dagger = \hat{t}(R,X); \rho_b^\dagger = \hat{t}(S,X); \rho_c^\dagger = \hat{t}(T,g_2) \\
+\tau^\dagger = (\rho_b^\dagger)^s \cdot (\rho_c^\dagger / \rho_a^\dagger)^{-c} \\
+L^\dagger = J^s \cdot K^{-c} \\
+\text{If } c \neq H_0 (R \con S \con T \con \tau^\dagger \con J \con K \con L^\dagger \con n_T \con \text{msgb}) \text{ return \textbf{reject}} \\
+\text{Otherwise return \textbf{accept}} \\
+\hline
+\end{array}
+$$
+\caption{The Verify Algorithm}
+\label{fig:verify}
+\end{figure}
+
+In the Sign Algorithm (Fig. \ref{fig:sign}), the computation of $L$, $c$ and $s$ is for the non-interactive Zero-knowledge proof of knowledge of $f$, and $\tau$ is to proof the knowledge of the issuer's credentials.
+
+To see if two signatures with same message title were signed by the same signer, only have to check whether $J_0 = J_1$ and $K_0 = K_1$.
+
+In the case of using this scheme in a polling system, \textbf{msgt} could be used to identify the poll and \textbf{msgb} for the poll choice.
