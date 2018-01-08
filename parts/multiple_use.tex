@@ -91,3 +91,95 @@ In the Sign Algorithm (Fig. \ref{fig:sign}), the computation of $L$, $c$ and $s$
 To see if two signatures with same message title were signed by the same signer, only have to check whether $J_0 = J_1$ and $K_0 = K_1$.
 
 In the case of using this scheme in a polling system, \textbf{msgt} could be used to identify the poll and \textbf{msgb} for the poll choice.
+
+\section{Insecure interactive protocol}
+
+This is an interactive protocol. Each interaction needs 3 participants: $P_i,P_j,P_k$.
+
+Let $G$ be a group of prime order $p$. Let $g \in G$ be a random generator of the group.
+
+$P_i$ chooses $x_i, x_j, x_k \in \ZZ^*_p$ three random values. Then $P_i$ shares $x_j$ with $P_j$ and $x_k$ with $P_k$.
+
+$P_i$ chooses $f_i, g_i$ two random polynomials of degree 1 where $f_i(0)=s_i$ the secret key of $P_i$.
+
+$P_j$ chooses $f_j, g_j$ two random polynomials of degree 1 where $f_j(0) = s_j$ the secret key of $P_j$.
+
+Let $v := g_i(0) + g_j(0)$.
+
+Then $P_i$ shares $f_i(x_j)$ and $g_i(x_j)$ with $P_j$; and shares $f_i(x_k)$ and $g_i(x_k)$ with $P_k$.
+
+$P_j$ shares $((g_i + g_j) \cdot (f_j - f_i))(x_j)$ with $P_i$.
+
+$P_k$ shares $((g_i + g_j) \cdot (f_j - f_i))(x_k)$ with $P_i$.
+
+Now, $P_i$ can compute $\left( (g_i + g_j)\cdot (f_j - f_i) \right)(0) = v \cdot (s_j - s_i)$.
+
+$P_i$ computes $g^{\frac{g(x_i)}{v(s_j -s_i)}}$
+
+\begin{figure}[H]
+\tiny
+$$
+\begin{array}{lllll}
+    P_i    &        & P_j    &        & P_k    \\
+    \hline
+    \\
+    \text{Input: } a \in G 
+            &        &        &        &        \\
+    x_i, x_j, x_k \in_R \ZZ_p \setminus \{0\}
+            & \xrightarrow{x_i,x_j,x_k}    &        &        &        \\
+            & \multicolumn{3}{c}{\xrightarrow{\makebox[3cm]{$x_i,x_j,x_k$}}}  &        \\
+    \gamma_{i,0}, \gamma_{i,1}, \gamma_{i,2} \in_R \ZZ_p
+            &        & \gamma_{j,0}, \gamma_{j,1}, \gamma_{j,2} \in_R \ZZ_p
+                             &        &        \\
+    \gamma_{i,1}, \gamma_{i,2} \neq 0
+            &        & \gamma_{j,1}, \gamma_{j,2} \neq 0
+                             &        &        \\
+    \\
+    g_i(x) \leftarrow \gamma_{i,1} \cdot x + \gamma_{i,0}
+            &        & g_j(x) \leftarrow \gamma_{j,1} \cdot x + \gamma_{j,0}
+                             &        &        \\
+    f_i(x) \leftarrow \gamma_{i,2} \cdot x + \alpha_i
+            &        & f_j(x) \leftarrow \gamma_{j,2} \cdot x + \alpha_j
+                             &        &        \\
+    \\
+    g_i(x_j), f_i(x_j)
+            & \xrightarrow{g_i(x_j), f_i(x_j)}
+                     & g_i(x_j), f_i(x_j)
+                              &        &        \\
+    g_i(x_k), f_i(x_k)
+            & \multicolumn{3}{c}{\xrightarrow{\makebox[3cm]{$g_i(x_k), f_i(x_k)$}}} &        \\
+    \\
+        h_i \leftarrow \left((g_i+g_j)(f_j - f_i)\right)(x_i)
+            &        &        &        &        \\
+            & \xleftarrow{h_j}
+                     & h_j \leftarrow \left((g_i+g_j)(f_j - f_i)\right)(x_j)
+                              &        &        \\
+            & \multicolumn{3}{c}{\xleftarrow{\makebox[3cm]{$h_k$}}}
+                                       & h_k \leftarrow \left((g_i+g_j)(f_j - f_i)\right)(x_k) \\
+    v(\alpha_j - \alpha_i) := 
+            &        &        &        &        \\
+    \quad (\gamma_{i,0} + \gamma_{j,0})(\alpha_j - \alpha_i) \leftarrow h_i,h_j,h_k
+            &        &        &        &        \\
+    \\
+    A \leftarrow a^{\frac{1}{v(\alpha_j - \alpha_i)}}
+            & \xrightarrow{A}
+                    &        &        &        \\
+    A^{G_i} \leftarrow A^{g_i(x_i)+g_j(x_i)}    
+            & \xleftarrow{A^{G_j}}
+                    & A^{G_j} \leftarrow A^{g_i(x_j)+g_j(x_j)}
+                             &        &        \\
+    \\
+    A^{G_i\frac{-x_j}{x_i - x_j}} A^{G_j\frac{-x_i}{x_j - x_i}} = 
+            &        &        &        &        \\
+    \quad A^{g_i(0) + g_j(0)} = a^{\frac{v}{v(\alpha_j - \alpha_i)}} = a^{\frac{1}{\alpha_j - \alpha_i}}
+            &        &        &        &        \\
+    \\
+    \text{Output: } a^{\frac{1}{\alpha_j - \alpha_i}}
+            &        &        &        &        \\
+    \hline
+\end{array} 
+$$
+\normalsize
+\caption{The Proposed Protocol}
+\label{fig:proposed_protocol}
+\end{figure}
