@@ -92,29 +92,31 @@ To see if two signatures with same message title were signed by the same signer,
 
 In the case of using this scheme in a polling system, \textbf{msgt} could be used to identify the poll and \textbf{msgb} for the poll choice.
 
-\section{Insecure interactive protocol}
+\section{Anonymous interactive protocol}
 
-This is an interactive protocol. Each interaction needs 3 participants: $P_i,P_j,P_k$.
+We propose an interactive protocol based on the signature scheme described in section \ref{sec:shamir_sig}. Recall that this scheme does not have the \textit{unlinkability} property because it uses "pseudonyms" and they are shared to compute the signature. So, the idea of this new protocol is to hide the "pseudonyms".
 
-Let $G$ be a group of prime order $p$. Let $g \in G$ be a random generator of the group.
+As in the previous scheme, a participant $P_i$ from a subset $P \subset \PP$ of $t$ participants will compute a partial signature $\sigma_i (m)$ on a message $m$.
 
-$P_i$ chooses $x_i, x_j, x_k \in \ZZ^*_p$ three random values. Then $P_i$ shares $x_j$ with $P_j$ and $x_k$ with $P_k$.
+In the following description, the partial signature will be $\sigma_i (m) = H(m)^{s_i \prod_{P_j \in (P \setminus P_i)} \frac{-\alpha_j}{\alpha_i - \alpha_j}}$. So the goal of this improvement is to compute $a^\frac{-\alpha_j}{\alpha_i - \alpha_j}$, for $1 \neq a \in G$, and a given participant $P_j \in P$ without sharing the values of $\alpha_i$ and $\alpha_j$. The protocol needs $t^2$ interactions as the one described in figure \ref{fig:proposed_protocol} to be able to compute the whole signature.
 
-$P_i$ chooses $f_i, g_i$ two random polynomials of degree 1 where $f_i(0)=s_i$ the secret key of $P_i$.
+To compute $a^\frac{-\alpha_j}{\alpha_i - \alpha_j}$ we need participants $P_i,P_j$ and any other third participant $P_k$.
 
-$P_j$ chooses $f_j, g_j$ two random polynomials of degree 1 where $f_j(0) = s_j$ the secret key of $P_j$.
+$P_i$ chooses $x_i, x_j, x_k \in \ZZ^*_p$ three random values and shares them with $P_j$ and $P_k$.
 
-Let $v := g_i(0) + g_j(0)$.
+$P_i$ and $P_j$ randomly choose linear polynomials $f_i, g_i$ and $f_j, g_j$, respectively, where the values of $\alpha_i$ and $\alpha_j$ are hidden in $f_i$ and $f_j$, respectively. As they share with each other the values of the polynomials on respective values $x_i, x_j, x_k$, each can compute the value of the quadratic polynomial $(g_i+g_j) \cdot (f_i - f_j)$ on a certain value and share it with $P_i$. Then, $P_i$ can compute the constant term of the quadratic polynomial $v \cdot (\alpha_i - \alpha_j)$ for some $v \in \ZZ_p$.
 
-Then $P_i$ shares $f_i(x_j)$ and $g_i(x_j)$ with $P_j$; and shares $f_i(x_k)$ and $g_i(x_k)$ with $P_k$.
+Now, $P_i$ computes $A := a^{\frac{1}{v(\alpha_i - \alpha_j)}}$ and shares it with $P_j$. They compute $A^{(g_i + g_j)(x_i)}$ and $A^{(g_i + g_j)(x_j)}$, resp., and they share it. With the values $x_i, x_j$, $P_j$ can do exponent interpolation and get $ a^{\frac{(g_i + g_j)(0)}{v(\alpha_i - \alpha_j)}} = a^{\frac{v}{v(\alpha_i - \alpha_j)}} = a^{\frac{1}{\alpha_i - \alpha_j}}$, and finally compute $a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}$
 
-$P_j$ shares $((g_i + g_j) \cdot (f_j - f_i))(x_j)$ with $P_i$.
-
-$P_k$ shares $((g_i + g_j) \cdot (f_j - f_i))(x_k)$ with $P_i$.
-
-Now, $P_i$ can compute $\left( (g_i + g_j)\cdot (f_j - f_i) \right)(0) = v \cdot (s_j - s_i)$.
-
-$P_i$ computes $g^{\frac{g(x_i)}{v(s_j -s_i)}}$
+% Once it is clear how can $P_i$ get $a^{\frac{1}{\alpha_j - \alpha_i}}$ for any $1 \neq a \in G$ (?).
+Let $\{ P_{j_1}, \dots , P_{j_{t-1}} \} = P \setminus P_i$, and let $a_k =  a_{k-1} {}^{\frac{- \alpha_{j_{k-1}}}{\alpha_{i} - \alpha_{j_{k-1}}}}$, where $a_1 = H(m)^{s_i}$. To compute the partial signature on $m$, $P_i$ interacts with each $P_{j_k}$ to compute $a_k^{\frac{-\alpha_k}{\alpha_i - \alpha_k}}$. Finally, we have:
+$$
+\sigma_i (m)
+= a_{t-1} {}^{\frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
+= a_k {}^{\frac{- \alpha_{j_{k}}}{\alpha_{i} - \alpha_{j_{k}}} \cdots \frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
+= a_1 {}^{\frac{- \alpha_{j_{1}}}{\alpha_{i} - \alpha_{j_{1}}} \cdots \frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
+= H(m)^{ s_i \frac{- \alpha_{j_{1}}}{\alpha_{i} - \alpha_{j_{1}}} \cdots \frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
+$$
 
 \begin{figure}[H]
 \tiny
@@ -123,11 +125,16 @@ $$
     P_i    &        & P_j    &        & P_k    \\
     \hline
     \\
+    
     \text{Input: } a \in G 
             &        &        &        &        \\
+    \\
+
     x_i, x_j, x_k \in_R \ZZ_p \setminus \{0\}
-            & \xrightarrow{x_i,x_j,x_k}    &        &        &        \\
-            & \multicolumn{3}{c}{\xrightarrow{\makebox[3cm]{$x_i,x_j,x_k$}}}  &        \\
+            & \xrightarrow{\makebox[1.5cm]{$x_i,x_j,x_k$}}    &        &        &        \\
+            & \multicolumn{3}{l}{\xrightarrow{\makebox[7.5cm]{$x_i,x_j,x_k$}}}  &        \\
+    \\
+                
     \gamma_{i,0}, \gamma_{i,1}, \gamma_{i,2} \in_R \ZZ_p
             &        & \gamma_{j,0}, \gamma_{j,1}, \gamma_{j,2} \in_R \ZZ_p
                              &        &        \\
@@ -142,39 +149,53 @@ $$
             &        & f_j(x) \leftarrow \gamma_{j,2} \cdot x + \alpha_j
                              &        &        \\
     \\
+    
     g_i(x_j), f_i(x_j)
             & \xrightarrow{g_i(x_j), f_i(x_j)}
-                     & g_i(x_j), f_i(x_j)
-                              &        &        \\
+                     &        &        &        \\
     g_i(x_k), f_i(x_k)
-            & \multicolumn{3}{c}{\xrightarrow{\makebox[3cm]{$g_i(x_k), f_i(x_k)$}}} &        \\
+            & \multicolumn{3}{l}{\xrightarrow{\makebox[7.5cm]{$g_i(x_k), f_i(x_k)$}}} &        \\
     \\
-        h_i \leftarrow \left((g_i+g_j)(f_j - f_i)\right)(x_i)
-            &        &        &        &        \\
-            & \xleftarrow{h_j}
-                     & h_j \leftarrow \left((g_i+g_j)(f_j - f_i)\right)(x_j)
+    
+            & \xleftarrow{\makebox[1.5cm]{$g_j(x_i), f_j(x_i)$}}
+                     & g_j(x_i), f_j(x_i)
                               &        &        \\
-            & \multicolumn{3}{c}{\xleftarrow{\makebox[3cm]{$h_k$}}}
-                                       & h_k \leftarrow \left((g_i+g_j)(f_j - f_i)\right)(x_k) \\
-    v(\alpha_j - \alpha_i) := 
+            &        & g_j(x_k), f_j(x_k)
+                              & \xrightarrow{\makebox[1.5cm]{$g_j(x_k), f_j(x_k)$}}
+                                       &        \\
+    
+    h_i \leftarrow \left((g_i+g_j)(f_i - f_j)\right)(x_i)
             &        &        &        &        \\
-    \quad (\gamma_{i,0} + \gamma_{j,0})(\alpha_j - \alpha_i) \leftarrow h_i,h_j,h_k
+            
+            & \xleftarrow{\makebox[1.5cm]{$h_j$}}
+                     & h_j \leftarrow \left((g_i+g_j)(f_i - f_j)\right)(x_j)
+                              &        &        \\
+    \\
+    
+            & \multicolumn{3}{l}{\xleftarrow{\makebox[7.5cm]{$h_k$}}}
+                                       & h_k \leftarrow \left((g_i+g_j)(f_i - f_j)\right)(x_k) \\
+    v(\alpha_i - \alpha_j) := 
+            &        &        &        &        \\
+    \quad (\gamma_{i,0} + \gamma_{j,0})(\alpha_i - \alpha_j) \leftarrow h_i,h_j,h_k
             &        &        &        &        \\
     \\
-    A \leftarrow a^{\frac{1}{v(\alpha_j - \alpha_i)}}
-            & \xrightarrow{A}
-                    &        &        &        \\
+    A \leftarrow a^{\frac{1}{v(\alpha_i - \alpha_j)}}
+            &       &        &        &        \\
     A^{G_i} \leftarrow A^{g_i(x_i)+g_j(x_i)}    
-            & \xleftarrow{A^{G_j}}
+            & \xrightarrow{\makebox[1.5cm]{$A, A^{G_i}$}}
                     & A^{G_j} \leftarrow A^{g_i(x_j)+g_j(x_j)}
                              &        &        \\
     \\
-    A^{G_i\frac{-x_j}{x_i - x_j}} A^{G_j\frac{-x_i}{x_j - x_i}} = 
-            &        &        &        &        \\
-    \quad A^{g_i(0) + g_j(0)} = a^{\frac{v}{v(\alpha_j - \alpha_i)}} = a^{\frac{1}{\alpha_j - \alpha_i}}
-            &        &        &        &        \\
+            &        &
+                            \multicolumn{2}{l}{A^{G_i\frac{-x_j}{x_i - x_j}} A^{G_j\frac{-x_i}{x_j - x_i}} = A^{g_i(0) + g_j(0)} = }
+                                       &        \\
+                            
+    a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}
+            & \xleftarrow{\makebox[1.5cm]{$a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}$}}
+                     & \multicolumn{2}{l}{a^{\frac{v}{v(\alpha_i - \alpha_j)}} = a^{\frac{1}{\alpha_i - \alpha_j}}}
+                                       &        \\
     \\
-    \text{Output: } a^{\frac{1}{\alpha_j - \alpha_i}}
+    \text{Output: } a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}
             &        &        &        &        \\
     \hline
 \end{array} 

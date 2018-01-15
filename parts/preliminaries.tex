@@ -116,7 +116,7 @@ Then, each participant $i$ is given the share $y_i = q(x_i)$.
 
 To recover the secret, we only need $k$ different shares. Let $P \subset \PP$ be any subset of $k$ participants. Then
 
-Let $\lambda_i^{P} = \prod_{P_j \in (P \setminus P_i)} \frac{-x_i}{x_i - x_j}$
+Let $\lambda_i^{P} = \prod_{P_j \in (P \setminus P_i)} \frac{-x_j}{x_i - x_j}$
 
 $$
     q(x) = \sum_{i \in P} y_i \prod_{\substack{j \in P \\ i \neq j}} \frac{x-x_j}{x_i-x_j}
@@ -125,6 +125,7 @@ $$
 Then, $s = q(0)$.
 
 \section{Threshold signature scheme using Shamir}
+\label{sec:shamir_sig}
 
 This signature scheme will be based on the BLS scheme.
 
