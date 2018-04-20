@@ -87,6 +87,25 @@ The signature on $m$ is $\sigma = H(m)^x$.
 
 Given a signature $\sigma$ and a public key $g^x$, it verifies that $e(\sigma,g) = e \left( H(m), g^x \right)$.
 
+\subsubsection{Schnorr}
+\cite{Schnorr90}
+Let $G$ be a cyclic group of prime order $p$. Let $g$ be a generator of $G$. Let $H : \{0,1\}^\ast \rightarrow \ZZ_p$ be a hash function.
+\paragraph{Key Generation}
+
+Randomly choose a secret key $x \in \ZZ_p$. The public key will be $y = g^x$.
+
+\paragraph{Signature}
+Randomly choose $z \in  \ZZ_p$, and compute $L := g^z$. \\
+Compute $c := H(L \parallel m)$. \\
+Compute $s := z + c \cdot x$ \\
+The signature on $m$ is $\sigma = (c,s)$.
+
+\paragraph{Verification}
+
+Given a signature $\sigma$ and a public key $y$, computes $L^{\dagger} := g^{s} y^{-c}$ and then check that $c = H(L^{\dagger} \parallel m) $
+
+
+
 \section{Signature Aggregation}
 Explain how different signature schemes allow aggregation of n signatures on n messages from n signers.
 
