@@ -2,6 +2,7 @@
 
 \input{config/config.tex}
 \usepackage[backend=bibtex, style=alphabetic, maxnames=4, minnames=3, maxbibnames=99]{biblatex}
+
 \bibliography{parts/bibliography.bib}
 \usepackage{pdfpages}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,8 +116,10 @@
 \newpage\null\thispagestyle{empty}\newpage
 \newpage{\cleardoublepage}
 \input{parts/conclusions}
+
 \newpage{\cleardoublepage}
 \printbibliography
+\addcontentsline{toc}{chapter}{Bibliography}
 \newpage\null\thispagestyle{empty}\newpage
 \cleardoublepage
 \newpage

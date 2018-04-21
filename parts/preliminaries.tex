@@ -38,7 +38,7 @@ A digital signature scheme consists of 3 algorithms:
 \begin{itemize}
     \item \textbf{Key generation}: on input of a security parameter $k$ (usually the length), outputs a pair $(sk, pk)$ of secret and public keys.
     \item \textbf{Signature}: given an input message $m$ and the secret key $sk$, outputs a signature $\sigma$.
-    \item \textbf{Verification}: given an input message $m$, a signature $\sigma$ on the message and a public key $pk$, ouptuts whether the signature is valid or not.
+    \item \textbf{Verification}: given an input message $m$, a signature $\sigma$ on the message and a public key $pk$, outputs whether the signature is valid or not.
 \end{itemize}
 
 A signature scheme must satisfy the following properties:
@@ -87,6 +87,25 @@ The signature on $m$ is $\sigma = H(m)^x$.
 
 Given a signature $\sigma$ and a public key $g^x$, it verifies that $e(\sigma,g) = e \left( H(m), g^x \right)$.
 
+\subsubsection{Schnorr}
+\cite{Schnorr90}
+Let $G$ be a cyclic group of prime order $p$. Let $g$ be a generator of $G$. Let $H : \{0,1\}^\ast \rightarrow \ZZ_p$ be a hash function.
+\paragraph{Key Generation}
+
+Randomly choose a secret key $x \in \ZZ_p$. The public key will be $y = g^x$.
+
+\paragraph{Signature}
+Randomly choose $z \in  \ZZ_p$, and compute $L := g^z$. \\
+Compute $c := H(L \parallel m)$. \\
+Compute $s := z + c \cdot x$ \\
+The signature on $m$ is $\sigma = (c,s)$.
+
+\paragraph{Verification}
+
+Given a signature $\sigma$ and a public key $y$, computes $L^{\dagger} := g^{s} y^{-c}$ and then check that $c = H(L^{\dagger} \parallel m) $
+
+
+
 \section{Signature Aggregation}
 Explain how different signature schemes allow aggregation of n signatures on n messages from n signers.
 
@@ -94,7 +113,7 @@ Explain how different signature schemes allow aggregation of n signatures on n m
 \section{Group Signatures}
 Use of aggregation: group signatures. They are used to sign on behalf of the group, prove group membership.
 
-The easyest way is to give everyone the secret key, so they can sign. But this would let any colluded user to share the secret key to other parties, which is not admissible.
+The easiest way is to give everyone the secret key, so they can sign. But this would let any colluded user to share the secret key to other parties, which is not admissible.
 
 Some group signatures need what is called a Dealer, which will deal with the keys.
 
@@ -131,7 +150,7 @@ This signature scheme will be based on the BLS scheme.
 
 Let $G$ be a gap group of some prime order $p$. Let $g \in G$ be a generator of the group.
 
-Let $\mathcal{P}= \{ 1, \dots , n \}$ be the set of participants in this scheme. Supose every participant $P_i \in \mathcal{P}$ is given a distinct random number $x_i \in \ZZ_p$ as in the Shamir Secret Sharing Scheme.
+Let $\mathcal{P}= \{ 1, \dots , n \}$ be the set of participants in this scheme. Suppose every participant $P_i \in \mathcal{P}$ is given a distinct random number $x_i \in \ZZ_p$ as in the Shamir Secret Sharing Scheme.
 
 Let $SK \in \ZZ_p$ be the secret key of the scheme. Let $q(x) = \sum_{i=0}^{k-1} a_i x^i$ be a random polynomial of degree $k-1$ but fixing $a_0 = SK$.
 
@@ -139,7 +158,7 @@ Each participant $P_i$ is given the share $s_i = q(x_i)$.
 
 So $$SK = \sum_{i \in P} s_i \lambda_i^P$$
 
-To sign a message $m$, each participant $P_i$ computes his partial signature $\sigma_i (m) = H(m)^{s_i}$ and broadcasts de pair $(x_i, \ \sigma_i (m))$.
+To sign a message $m$, each participant $P_i$ computes his partial signature $\sigma_i (m) = H(m)^{s_i}$ and broadcasts the pair $(x_i, \ \sigma_i (m))$.
 
 Then, after a set $P$ of at least $t$ participants has broadcast their partial signatures for the message, a standard signature $\sigma$ can be computed:
 
@@ -148,7 +167,17 @@ $$ \sigma (m) = \prod_{P_i \in P} \sigma_i (m)^{\lambda_i^{P}}= H(m)^{\sum_{P_i 
 The signature is valid if $e(\sigma, g) = e(H(m), PK)$
 
 \section{Anonymity}
-The concept of anonimity is used in so many ways
+
+In order to compare different schemes we need to clear up the definition of anonymity.
+
+The word anonymity is derived from the Greek word \textit{anonymia}, meaning "without a name". In technical terms, the "name" of a participant would be something that uniquely identifies him, e.g. his public key. So, a scheme would be anonymous if the public key of the participant is not disclosed or cannot be obtained in any way at any moment.
+
+It is not very intuitive how we can punt the concept of anonymity in a signature scheme. An anonymous signature does not make much sense. There is no use of an information signed by an anonymous person. What is useful is a signature from a known group of people, but cannot determine from which one nor distinguish two signatures of different participants of the same group on the same message.
+
+- Absolute anonymity. No use. Same as no signature
+- Anonymity inside a group. 
+
+
 
 You could use ring signatures which proofs the knowledge of a 1-out-of-N secret key. This could be useful for a small amount of signatures. But it is not useful to provide general anonymity.
 
@@ -157,3 +186,9 @@ A signature scheme provides anonymity if:
     \item Unlinkability: cannot decide whether two different signatures were signed by the same user.
     \item Untraceability: cannot get the public key of the signer from a valid signature.
 \end{itemize}
+
+\cite{BlSt97} 
+
+An ideal secret sharing scheme is a scheme in which the size of the shares given to each participant is equal to the size of the secret.
+
+In an anonymous secret sharing schemes the secret can be reconstructed without the knowledge of which participants hold which shares.
