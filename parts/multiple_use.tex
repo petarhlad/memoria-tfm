@@ -10,7 +10,17 @@ Based on Shamir's secret sharing scheme, this will set a $(t,n)$-threshold secre
 
 Setup Algorithm
 
-Let $q > n$ be a sufficiently large prime. Let $a_0, \dots , a_{t-1} \in_R \ZZ_q$.
+Let $\PP = \{P_1 , \dots , P_n \}$ be the set of participants.
+
+The set of participants is divided into $r$ groups $\PP_1, \dots , \PP_r$, with each group consisting of $n/r$ participants ($\PP_i = \{P^i_1, \dots , P^i_{n/r}\}$). For simplicity, we assume that $r \vert n$.
+
+Let $q > n$ be a sufficiently large prime. Let $a_0, \dots , a_{t-1} \in_R \ZZ_q$, where $s=a_0 \in \ZZ_q$ is the secret key.
+
+We set up a $(t,r)$-threshold signature scheme.
+
+When $t$ participants try to sign a message, there is a probability $p_{\text{fail}} = 1 - p_{\text{success}}$ that at least two participants belong to the same group. The probability that all $t$ participants belong to different groups is given by $p_{\text{success}} = \frac{\binom{r}{t} \left( \frac{n}{r} \right)^{t}}{\binom{n}{t}}$.
+
+Looks like, for large values, $p_{\text{fail}} \sim \frac{t^2}{2r}$
 
 
 

@@ -25,7 +25,7 @@ Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Le
 
 \end{enumerate}
 
-\defn A gap group is a group on which the DDH problem is easy but the CDH is hard.
+\defn A Gap co-Diffie-Hellman (co-GDH) group pair is a pair of groups $(G_1, G_2)$ on which co-DDH is easy but co-CDH is hard. When $(G_1, G_1)$ is a co-GDH group pair, we say $G_1$ is a Gap group (GDH).
 
 \newpage
 
@@ -49,16 +49,14 @@ A signature scheme must satisfy the following properties:
 \end{itemize}
 
 \subsection{Examples}
-\subsubsection{ElGamal}
+\subsubsection*{ElGamal}
+\cite{elGamal85}
 Let $H$ be a collision-resistant hash function. Let $p$ be a large prime such that the \textit{discrete logarithm problem} is difficult over $\ZZ_p$. Let $g$ be a randomly chosen generator of $\ZZ_p^\ast$
 
-\paragraph{Key Generation}
-
-Randomly choose a secret key $x \in \ZZ_p^\ast$, and compute the public key $y = g^x$.
-
-\paragraph{Signature}
-
-To sign a message $m$, the signer chooses a random $k \in \ZZ_p^\ast$.
+\begin{itemize}[align = left, leftmargin=*]
+	\item[\textbf{Key generation.}]	Randomly choose a secret key $x \in \ZZ_p^\ast$, and compute the public key $y = g^x$.
+	
+	\item[\textbf{Signature.}]To sign a message $m$, the signer chooses a random $k \in \ZZ_p^\ast$.
 Compute $ r = g^k$. To compute $s$, the following equation must be satisfied: $g^{H(m)} = g^{xr} g^{ks}$.
 So $s = \left( H(m) - xr \right) k^{-1} \quad (\text{mod } p-1)$
 
@@ -66,45 +64,37 @@ If $s=0$, it starts over again with a different $k$.
 
 The pair $(r,s)$ is the digital signature for $m$.
 
-\paragraph{Verification}
-
-Check $g^{H(m)} = y^r r^s$
+	\item[\textbf{Verification.}]Check $g^{H(m)} = y^r r^s$
 
 The use of $H( \cdot )$ prevents an existential forgery attack.
 
-\subsubsection{Boneh-Lynn-Shacham (BLS)}
+\end{itemize}
+
+\subsubsection*{Boneh-Lynn-Shacham (BLS)}
 \cite{BonehLS01}
-Let $G,G_T$ be (¿gap?) groups of prime order $p$. Let $g$ be a generator of $G$. Let $e:G \times G \rightarrow G_T$ be a non-degenerate bilinear pairing.
-\paragraph{Key Generation}
+Let $G_1,G_2$ be a bilinear group pair of prime order $p$. Let $g$ be a generator of $G_1$. Let $e:G_1 \times G_2 \rightarrow G_T$ be a non-degenerate bilinear pairing. Let $H: \{0,1\}^* \rightarrow G_1$ be a full-domain hash function.
 
-Randomly choose a secret key $x \in \ZZ_p$. The public key will be $y = g^x$.
+\begin{itemize}[align = left, leftmargin=*]
+	\item[\textbf{Key generation.}] Randomly choose a secret key $x \in \ZZ_p$. The public key is $y = g_2^x$.
+	
+	\item[\textbf{Signature.}] Given a private key $x \in \ZZ_p$, and a message $m \in \{0,1\}^*$, compute $h = H(m) \in G_1$ and $\sigma = h^x$. The signature is $\sigma \in G_1$.
+	
+	\item[\textbf{Verification.}] Given a public key $y$, a message $m \in \{0,1\}^*$ and a signature $\sigma \in G_1$, compute $h = H(m) \in G_1$ and verify that $e(\sigma,g_2) = e \left( h, y \right)$.
+	
+\end{itemize}
 
-\paragraph{Signature}
-
-The signature on $m$ is $\sigma = H(m)^x$.
-
-\paragraph{Verification}
-
-Given a signature $\sigma$ and a public key $g^x$, it verifies that $e(\sigma,g) = e \left( H(m), g^x \right)$.
-
-\subsubsection{Schnorr}
+\subsubsection*{Schnorr}
 \cite{Schnorr90}
 Let $G$ be a cyclic group of prime order $p$. Let $g$ be a generator of $G$. Let $H : \{0,1\}^\ast \rightarrow \ZZ_p$ be a hash function.
-\paragraph{Key Generation}
 
-Randomly choose a secret key $x \in \ZZ_p$. The public key will be $y = g^x$.
-
-\paragraph{Signature}
-Randomly choose $z \in  \ZZ_p$, and compute $L := g^z$. \\
+\begin{itemize}[align = left, leftmargin=*]
+	\item[\textbf{Key generation.}]	Randomly choose a secret key $x \in \ZZ_p$. The public key will be $y = g^x$.
+	\item[\textbf{Signature.}] Randomly choose $z \in  \ZZ_p$, and compute $L := g^z$. \\
 Compute $c := H(L \parallel m)$. \\
 Compute $s := z + c \cdot x$ \\
 The signature on $m$ is $\sigma = (c,s)$.
-
-\paragraph{Verification}
-
-Given a signature $\sigma$ and a public key $y$, computes $L^{\dagger} := g^{s} y^{-c}$ and then check that $c = H(L^{\dagger} \parallel m) $
-
-
+	\item[\textbf{Verification.}] Given a signature $\sigma$ and a public key $y$, computes $L^{\dagger} := g^{s} y^{-c}$ and then check that $c = H(L^{\dagger} \parallel m) $
+\end{itemize}
 
 \section{Signature Aggregation}
 Explain how different signature schemes allow aggregation of n signatures on n messages from n signers.
