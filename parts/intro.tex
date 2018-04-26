@@ -1,11 +1,43 @@
 \chapter{Introduction}
 
-Intro
 \cite{Phillips1992}
+\cite{BlSt97}
 
-Let $\PP := \{ P_1, \dots, P_n \}$ be the set of participants.
+An access structure $\Gamma$ is the set of all subsets of $\PP$ that can recover the secret.
 
-An access structure $\Gamma$ is a superset-closed collection of nonempty subsets of $\PP$.
+\defn Let $\PP := \{ P_1, \dots, P_n \}$ be a set of participants. A \textit{monotone access structure} $\Gamma$ on $\PP$ is a subset $\Gamma \subseteq 2^{\PP}$, such that $$ A \in \Gamma, \quad A \subseteq A' \subseteq \PP \Rightarrow A' \in \Gamma $$
 
-The basis for an access structure $\Gamma$ is the smallest subset of $\Gamma$ whose superset closure is the whole of $\Gamma$.
+\defn Let $\PP := \{ P_1, \dots, P_n \}$ be a set of participants and let $A \subseteq 2^{\PP}$. The \textit{closure} of $A$, denoted $\cl (A)$, is the set $$ \cl (A) = \{ C: \exists B \in A \text{ s.t. } B \subseteq C \subseteq \PP \}$$
 
+For a monotone access structure $\Gamma$ we have $\Gamma = \cl (\Gamma)$.
+
+\defn Let $\Gamma$ be an access structure on a set of participants $\PP$. $B \in \Gamma$ is a \textit{minimal} qualified set if $A \notin \Gamma$ whenever $A \subsetneq B$.
+
+\defn Let $\Gamma$ be an access structure on a set of participants $\PP$. The family of minimal qualified sets $\Gamma_{0}$ of $\Gamma$ is called a \textit{basis} of $\Gamma$.
+
+For a basis $\Gamma_0$ of an access structure $\Gamma$ we have $\Gamma = \cl (\Gamma_{0})$
+
+\defn An access structure $\Gamma$ is \textit{trivial} if either $\Gamma = 2^{\PP}$ or $\Gamma = \{ \PP \}$.
+
+Let $\mathcal{K}$ be a set of $q$ elements called \textit{secret keys}, and let $\mathcal{S}$ be a finite set whose elements are called \textit{shares}. Let $D$ be a \textit{dealer} who wants to share a secret key $\mathbf{k} \in \mathcal{K}$ among the participants in $\PP$. 
+
+\defn A \textit{distribution rule} is a function $f : \PP \cup \{ D \} \rightarrow \KK \cup \SS$ which satisfies the conditions $f(D) \in \KK$ and $f(P_i) \in \SS$ for $i = 1,2, \dots, n$.
+
+Secret sharing schemes will be represented by a collection of distribution rules, which represent a possible distribution of shares to the participants where $f(D)$ is the secret key being shared and $f(P_i)$ is the share given to $P_i$.
+
+\defn Let $\mathscr{F}$ be a family of distribution rules, and let $\mathbf{k} \in \KK$. Then $\mathscr{F}_{\mathbf{k}} := \{ f \in \mathscr{F} : f(F) = \mathbf{k}\}$ is the family of all distribution rules having $\mathbf{k}$ as secret.
+
+If $\kk \in \KK$ is the secret that $D$ wants to share, then $D$ will chose a distribution rule $f \in \F_{\KK}$ uniformly at random.
+
+
+Let $\{p_{\KK} (\kk) \}_{\kk \in \KK}$ be a probability distribution on $\KK$, and let a collection of distribution rules for secrets in $\KK$ be fixed.
+
+\defn A \textit{perfect secret sharing scheme}, with respect to a monotone access structure $\Gamma \subseteq 2^{\PP}$, is a collection of distribution rules that satisfy the following two properties:
+\begin{enumerate}
+    \item If a subset $A \in \Gamma$ of participants pool their shares, then they can determine the value of the secret $\kk$.
+    \item If a subset $A \notin \Gamma$ of participants pool their shares, then they can determine nothing about the value of the secret $\kk$. Formally, if $A \notin \acc$ then for all $a = \{ (P_i, s_i): P_i \in A \text{ and } s_i \in \SS \}$ with $p(a)>0$, and for all $\kk \in \KK$, it holds $p(\kk \vert a) = p_{\KK}(\kk)$. In other words, the \textit{a priori} probability of the value of $\kk$ does not change after knowing the shares held by $A$.
+\end{enumerate}
+
+\defn An \textit{ideal secret sharing scheme} is a secret sharing scheme for which $\vert \KK \vert = \vert \SS \vert$. An access structure admitting an ideal secret sharing scheme will be referred as \textit{ideal access structure}.
+
+\thm Let $\acc$ be an access structure on a set of participants $\PP$. An ideal anonymous secret sharing scheme for $\acc$ exists if and only if either $\acc$ is a $(1,\vert \PP \vert)$ threshold structure, a $(\vert \PP \vert, \vert \PP \vert)$ threshold structure, or the closure of a complete bipartite graph.
