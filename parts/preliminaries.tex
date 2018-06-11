@@ -27,6 +27,48 @@ Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Le
 
 \defn A Gap co-Diffie-Hellman (co-GDH) group pair is a pair of groups $(G_1, G_2)$ on which co-DDH is easy but co-CDH is hard. When $(G_1, G_1)$ is a co-GDH group pair, we say $G_1$ is a Gap group (GDH).
 
+\section{Oblivious Polynomial Evaluation}
+
+Oblivious polynomial evaluation is a protocol involving two parties, a sender whose input is a polynomial $P$, and a receiver whose input is a value $\alpha$. Ath the end of the protocol, the receiver learns $P(\alpha)$ and the sender learns nothing.
+
+Generic Protocol:
+
+\begin{itemize}
+    \item Input:
+    
+    \begin{itemize}
+        \item Sender: a polynomial $P(y) = \sum_{i=0}^{d_P} b_i y^i$ of degree $d_P$ in the field $\FF$.
+        \item Receiver: a value $\alpha \in \FF$
+    \end{itemize}
+    
+    \item Output:
+    
+    \begin{itemize}
+        \item Sender: nothing.
+        \item Receiver: $P(\alpha)$
+    \end{itemize}
+    
+    \item Protocol security parameters: $m$, $k$.
+    
+\end{itemize}
+
+Protocol:
+
+1. The sender hides $P$ in a bivariate polynomial:
+
+The sender generates a random masking polynomial $P_x (x)$ of degree $d$ s.t. $P_x (0) = 0$.
+$$P_x (x) = \sum_{i=1}^{d} a_i x^i$$
+where $d = k \cdot d_P$.
+
+The sender defines a bivariate polynomial
+$$ Q(x,y) = P_x(x) + P(y) = \sum_{i=1}^{d} a_i x^i + \sum_{i=0}^{d_P} b_i y^i $$
+
+2. The receiver hides $\alpha$ in a univariate polynomial:
+
+The receiver chooses a random polynomial $S$ of degree $k$, such that $S(0) = \alpha$.
+
+Define $R(x) = Q( x, S(x))$.
+
 \newpage
 
 \section{Homomorphic PKE}

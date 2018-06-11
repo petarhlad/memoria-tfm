@@ -249,3 +249,123 @@ $$
 \caption{The Proposed Protocol}
 \label{fig:proposed_protocol}
 \end{figure}
+
+\begin{figure}
+
+        \begin{tikzpicture}
+            
+            \tikzset{vertex/.style = {draw=none,minimum size=1.5em}}
+            \tikzset{calc/.style = {rectangle, draw}}
+            \tikzset{edge/.style = {->,thick, > = latex'}}
+        
+            \node[vertex] (Pi) at (0,0) {$P_i$};
+            \node[vertex] (Pj) at (6,0) {$P_j$};
+            \node[vertex] (Ps) at (3,4) {$P_s$};
+            \node[vertex] (BC) at (3,1.5) {BC};
+            
+            \node[calc, left = of Pi] (i) {
+                \begin{tabular}{c}
+                    $x_i,x_j,x_s \in_R \ZZ_p^{\ast}$ \\
+                    $\gamma_{i,0}, \gamma_{i,1}, \gamma_{i,2} \in_R \ZZ_p$ \\
+                    $g_i(x) \leftarrow \gamma_{i,1} \cdot x + \gamma_{i,0}$ \\
+                    $f_i(x) \leftarrow \gamma_{i,2} \cdot x + \alpha_i$
+                \end{tabular}
+            };
+            
+            \node[calc, right = of Pj] (j) {
+                \begin{tabular}{c}
+                    $\gamma_{j,0}, \gamma_{j,1}, \gamma_{j,2} \in_R \ZZ_p$ \\
+                    $g_j(x) \leftarrow \gamma_{j,1} \cdot x + \gamma_{j,0}$ \\
+                    $f_j(x) \leftarrow \gamma_{j,2} \cdot x + \alpha_j$
+                \end{tabular}
+            };
+            
+            \draw[edge] (Pi) to node[sloped,midway,above] {blabla} (Pj);
+            
+        
+        \end{tikzpicture}
+
+
+\caption{Step 1.}
+\end{figure}
+
+\begin{figure}
+
+        \begin{tikzpicture}
+            
+            \tikzset{vertex/.style = {draw=none,minimum size=1.5em}}
+            \tikzset{calc/.style = {rectangle, draw}}
+            \tikzset{edge/.style = {->,thick, > = latex'}}
+        
+            \node[vertex] (Pi) at (0,0) {$P_i$};
+            \node[vertex] (Pj) at (6,0) {$P_j$};
+            \node[vertex] (Ps) at (3,4) {$P_s$};
+            \node[vertex] (BC) at (3,1.5) {BC};
+            
+            \node[calc, left = of Pi] (i) { \footnotesize
+                \begin{tabular}{c}
+                    $g_i(x_i), g_i(x_j), g_i(x_s) \leftarrow g_i$ \\
+                    $f_i(x_i), f_i(x_j), f_i(x_s) \leftarrow f_i$
+                \end{tabular}
+            };
+            
+            \node[calc, right = of Pj] (j) { \footnotesize
+                \begin{tabular}{c}
+                    $g_j(x_i), g_j(x_j), g_j(x_s) \leftarrow g_j$ \\
+                    $f_j(x_i), f_j(x_j), f_j(x_s) \leftarrow f_j$
+                \end{tabular}
+            };
+            
+            %\draw[edge] (Pi) to node[sloped,midway,above] {$x_i,x_j,x_s$} (BC);
+            \draw[edge] (Pi) to [bend left=10] node[sloped,midway,above] {$g_i(x_j),f_i(x_j)$} (Pj);
+            \draw[edge] (Pj) to [bend left=10] node[sloped,midway,below] {$g_j(x_i),f_j(x_i)$} (Pi);
+            \draw[edge] (Pi) to node[sloped,midway,above] {$g_i(x_s),f_i(x_s)$} (Ps);
+            \draw[edge] (Pj) to node[sloped,midway,above] {$g_j(x_s),f_j(x_s)$} (Ps);
+            
+        
+        \end{tikzpicture}
+\caption{Step 2}
+\end{figure}
+
+\begin{figure}
+
+        \begin{tikzpicture}[node distance=0.5cm]
+            
+            \tikzset{vertex/.style = {draw=none,minimum size=1.5em}}
+            \tikzset{calc/.style = {rectangle, draw}}
+            \tikzset{edge/.style = {->,thick, > = latex'}}
+        
+            \node[vertex] (Pi) at (0,0) {$P_i$};
+            \node[vertex] (Pj) at (6,0) {$P_j$};
+            \node[vertex] (Ps) at (3,4) {$P_s$};
+            \node[vertex] (BC) at (3,1.5) {BC};
+            
+            \node[calc, below left = of Pi] (i) { \footnotesize
+                \begin{tabular}{c}
+                    $h_i \leftarrow \left( (g_i + g_j)(f_i - f_j) \right)(x_i)$ \\
+                    $h \leftarrow h_i, h_j, h_s$ \\
+                    $h = h(0) = (\gamma_{i,0}  + \gamma_{j,0})(\alpha_i - \alpha_j)$ \\
+                    $ = v( \alpha_i - \alpha_j) $
+                \end{tabular}
+            };
+            
+            \node[calc, below = of Pj] (j) { \footnotesize
+                \begin{tabular}{c}
+                    $h_j \leftarrow \left( (g_i + g_j)(f_i - f_j) \right)(x_j)$
+                \end{tabular}
+            };
+            
+            \node[calc, above = of Ps] (s) { \footnotesize
+                \begin{tabular}{c}
+                    $h_s \leftarrow \left( (g_i + g_j)(f_i - f_j) \right)(x_s)$
+                \end{tabular}
+            };
+            
+            
+            \draw[edge] (Pj) to node[sloped,midway,below] {$h_j$} (Pi);
+            \draw[edge] (Ps) to node[sloped,midway,above] {$h_s$} (Pi);
+            
+        
+        \end{tikzpicture}
+\caption{Step 3}
+\end{figure}
