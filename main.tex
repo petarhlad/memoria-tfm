@@ -10,7 +10,7 @@
 \newcommand{\titol}{Anonymous threshold signatures}
 \newcommand{\shortitol}{Anonymous threshold signatures}
 \newcommand{\autor}{Petar Hlad Colic}
-\renewcommand{\cleardoublepage}{}
+%\renewcommand{\cleardoublepage}{}
 
 % PÀGINA INICIAL
 \frontmatter
@@ -45,13 +45,12 @@
    	\end{center}
 \end{titlepage} 
 %\pagestyle{plain}
-\newpage\null\thispagestyle{empty}\newpage
-\newpage{\cleardoublepage}
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 %ABSTRACT
 %\thispagestyle{plain}
 %\addcontentsline{toc}{section}{Abstract}
 \input{parts/abstract}
-\newpage{\cleardoublepage}
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 
 %% Discomment for "thanks" page.
 %\thispagestyle{plain}
@@ -61,25 +60,23 @@
 %% Acknowledgements
 %\thispagestyle{plain}
 %\addcontentsline{toc}{section}{Acknowledgements}
-\newpage\null\thispagestyle{empty}\newpage
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 \input{parts/acknowledgements}
-\newpage{\cleardoublepage}
-\newpage\null\thispagestyle{empty}\newpage
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 {\tableofcontents
-\newpage{\cleardoublepage}
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 
 % To force the figures to appear:
 \setcounter{tocdepth}{2}
 %\addcontentsline{toc}{section}{List of Figures}
 \setcounter{tocdepth}{2}
 \listoffigures
-\newpage{\cleardoublepage}
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 
 %\addcontentsline{toc}{section}{List of Tables}
-\newpage\null\thispagestyle{empty}\newpage
+%\newpage\null\thispagestyle{empty}\newpage
 \listoftables
-\newpage{\cleardoublepage}
-\newpage\null\thispagestyle{empty}\newpage
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 %\thispagestyle{plain}
 %\addcontentsline{toc}{section}{Nomenclature}
 %\printnomenclature
@@ -92,66 +89,17 @@
 %\pagenumbering{arabic}
 \mainmatter
 \input{parts/intro}
-
-\newpage{\cleardoublepage}
-\newpage\null\thispagestyle{empty}\newpage
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 \input{parts/preliminaries}
-
-\newpage{\cleardoublepage}
-%\newpage\null\thispagestyle{empty}\newpage
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 \input{parts/single_use}
-\newpage{\cleardoublepage}
-\newpage\null\thispagestyle{empty}\newpage
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 \input{parts/multiple_use}
-%\newpage{\cleardoublepage}
-%\newpage\null\thispagestyle{empty}\newpage
-%\input{parts/software}
-%\newpage\null\thispagestyle{empty}\newpage
-%\newpage{\cleardoublepage}
-%\input{parts/hardware}
-%\newpage{\cleardoublepage}
-%\input{parts/results}
-%\newpage{\cleardoublepage}
-%\input{parts/budget}
-\newpage\null\thispagestyle{empty}\newpage
-\newpage{\cleardoublepage}
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 \input{parts/conclusions}
 
-\newpage{\cleardoublepage}
+\clearpage{\thispagestyle{empty}\cleardoublepage}
 \printbibliography
 \addcontentsline{toc}{chapter}{Bibliography}
-\newpage\null\thispagestyle{empty}\newpage
-\cleardoublepage
-\newpage
-\appendix
-\pretocmd{\chapter}{%
-  \clearpage
-  \pagenumbering{arabic}%
-  \renewcommand*{\thepage}{\thechapter\arabic{page}}%
-}{}{}
-\clearpage
-\addcontentsline{toc}{chapter}{Apèndixs}
-\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
-%\input{appendix/appendix_gantt}
-%\newpage{\cleardoublepage}
-%\input{appendix/appendix_uml}
-%\newpage\null\thispagestyle{empty}\newpage
-%\newpage{\cleardoublepage}
-%\input{appendix/appendix_budget}
-%\newpage{\cleardoublepage}
-%\input{appendix/appendix_documentation}
-%\newpage{\cleardoublepage}
-%\input{appendix/appendix_video}
-%\newpage{\cleardoublepage}
-\setcounter{tocdepth}{2}
-
-%\input{appendix/appendix_blender}
-
-%\newpage
-%\annex
-%\clearpage
-%\addcontentsline{toc}{chapter}{Anexes}
-\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
-
 
 \end{document}
