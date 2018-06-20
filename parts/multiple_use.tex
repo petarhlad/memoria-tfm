@@ -45,7 +45,7 @@ Some values:
     \end{tabular}
 \end{center}
 
-
+\cite{Deng04}
 
 \section{Non-linear size anonymous threshold signature}
 \cite{ChenNW11}
@@ -139,29 +139,23 @@ In the case of using this scheme in a polling system, \textbf{msgt} could be use
 
 \section{Anonymous interactive protocol}
 
-We propose an interactive protocol based on the signature scheme described in section \ref{sec:shamir_sig}. Recall that this scheme does not have the \textit{unlinkability} property because it uses "pseudonyms" and they are shared to compute the signature. Thus, the idea of this new protocol is to hide the "pseudonyms".
+We propose an interactive protocol based on the signature scheme described in section \ref{sec:shamir_sig}. Recall that this scheme does not have the \textit{unlinkability} property because it uses "pseudonyms" and they are shared to compute the signature. Thus, the idea of this new protocol is to hide these "pseudonyms".
 
-As in the previous scheme, a participant $P_i$ from a subset $P \subset \PP$ of $t$ participants will compute a partial signature $\sigma_i (m)$ on a message $m$.
+As in the \textbf{¿previous?} scheme, a participant $P_i$ from a subset $P \subset \PP$ of $t$ participants will compute a partial signature $\sigma_i (m)$ on a message $m$. The partial signature will be $\sigma_i (m) = H(m)^{s_i \prod_{P_j \in (P \setminus P_i)} \frac{-\alpha_j}{\alpha_i - \alpha_j}}$.
 
-In the modification that we propose of the protocol, the partial signature will be $\sigma_i (m) = H(m)^{s_i \prod_{P_j \in (P \setminus P_i)} \frac{-\alpha_j}{\alpha_i - \alpha_j}}$. The goal of this modification is, given $P_j \in P$, to compute $a^\frac{-\alpha_j}{\alpha_i - \alpha_j}$, for $1 \neq a \in G$, without sharing the values of $\alpha_i$ and $\alpha_j$. The protocol needs $t^2$ interactions as the one described in figure \ref{fig:proposed_protocol} to be able to compute the whole signature.
+The goal of this modification is to compute $a^\frac{-\alpha_j}{\alpha_i - \alpha_j}$ without sharing the values of $\alpha_i$ and $\alpha_j$, for $1 \neq a \in G$ and a given $P_j \in P$. \sout{The protocol needs $t^2$ interactions as the one described in figure \ref{fig:proposed_protocol} to be able to compute the whole signature.}
 
 To compute $a^\frac{-\alpha_j}{\alpha_i - \alpha_j}$ we need participants $P_i,P_j$ and a third party $P_s$ that could be any other participant or a reliable party (like secure hardware).
 
-$P_i$ chooses $x_i, x_j, x_k \in \ZZ^*_p$ three random values and shares them with $P_j$ and $P_k$.
+\subsection{Description}
+\subsubsection*{Interaction}
+Let $a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}} \leftarrow \mathcal{B}(a,P_i,P_j)$ the protocol that outputs $a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}$ given $1 \neq a \in G$, a first participant $P_i$ and a second participant $P_j$.
 
-$P_i$ and $P_j$ randomly choose linear polynomials $f_i, g_i$ and $f_j, g_j$, respectively, where the values of $\alpha_i$ and $\alpha_j$ are hidden in $f_i$ and $f_j$, respectively. As they share with each other the values of the polynomials on respective values $x_i, x_j, x_k$, each can compute the value of the quadratic polynomial $(g_i+g_j) \cdot (f_i - f_j)$ on a certain value and share it with $P_i$. Then, $P_i$ can compute the constant term of the quadratic polynomial $v \cdot (\alpha_i - \alpha_j)$ for some $v \in \ZZ_p$.
+This protocol is split in five steps. The description follows:
 
-Now, $P_i$ computes $A := a^{\frac{1}{v(\alpha_i - \alpha_j)}}$ and shares it with $P_j$. They compute $A^{(g_i + g_j)(x_i)}$ and $A^{(g_i + g_j)(x_j)}$, resp., and they share it. With the values $x_i, x_j$; $P_j$ can do exponent interpolation and get $ a^{\frac{(g_i + g_j)(0)}{v(\alpha_i - \alpha_j)}} = a^{\frac{v}{v(\alpha_i - \alpha_j)}} = a^{\frac{1}{\alpha_i - \alpha_j}}$, and finally compute $a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}$
+\textbf{First step:} $P_i$ chooses $x_i, x_j, x_s \in \ZZ^*_p$ three random values and shares them with $P_j$ and $P_s$. These will be the new "pseudonyms".
 
-% Once it is clear how can $P_i$ get $a^{\frac{1}{\alpha_j - \alpha_i}}$ for any $1 \neq a \in G$ (?).
-Let $\{ P_{j_1}, \dots , P_{j_{t-1}} \} = P \setminus P_i$, and let $a_k =  a_{k-1} {}^{\frac{- \alpha_{j_{k-1}}}{\alpha_{i} - \alpha_{j_{k-1}}}}$, where $a_1 = H(m)^{s_i}$. To compute the partial signature on $m$, $P_i$ interacts with each $P_{j_k}$ to compute $a_k^{\frac{-\alpha_k}{\alpha_i - \alpha_k}}$. Finally, we have:
-$$
-\sigma_i (m)
-= a_{t-1} {}^{\frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
-= a_k {}^{\frac{- \alpha_{j_{k}}}{\alpha_{i} - \alpha_{j_{k}}} \cdots \frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
-= a_1 {}^{\frac{- \alpha_{j_{1}}}{\alpha_{i} - \alpha_{j_{1}}} \cdots \frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
-= H(m)^{ s_i \frac{- \alpha_{j_{1}}}{\alpha_{i} - \alpha_{j_{1}}} \cdots \frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
-$$
+$P_i$ and $P_j$ randomly choose polynomials $f_i, g_i, z_i$ and $f_j, g_j, z_j$, respectively, where: $f_i,f_j$ and $g_i,g_j$ are linear, $g_i(0) = \alpha_i$ and $g_j(0) = \alpha_j$, and $z_i,z_j$ are quadratic polynomials with $z_i(0) = z_j(0) = 0$.
 
 \begin{figure}
         \begin{center}
@@ -201,6 +195,10 @@ $$
 
 \caption{Step 1}
 \end{figure}
+
+\textbf{Second step:} Let $h(x) = (g_i(x) + g_j(x))(f_i(x) - f_j(x)) + z_i(x) + z_j(x)$. Note that $h(0) = v \cdot (\alpha_i - \alpha_j)$ for $v := g_i(0) + g_j(0)$.
+
+$P_i$ and $P_j$ share with the rest the evaluations of the random polynomials s.t. $P_i,P_j,P_s$ can compute the evaluations $h(x_i),h(x_j),h(x_s)$ respectively.
 
 \begin{figure}
         \begin{center}
@@ -244,6 +242,8 @@ $$
 \caption{Step 2}
 \end{figure}
 
+\textbf{Third step:} $P_i$,$P_j$,$P_s$ compute the evaluation of $h$ and share it with the rest. $P_i$ and $P_j$ interpolate the value $h(0)$.
+
 \begin{figure}
         \begin{center}
         \begin{tikzpicture}[node distance=0.5cm]
@@ -257,15 +257,17 @@ $$
             \node[vertex] (Ps) at (2,2.6) {$P_s$};
             \node[vertex] (BC) at (2,1) {BC};
             
-            \node[calc, left = of Pi] (i) { \footnotesize
+            \node[calc] (i) at (-2.5,-1){ \footnotesize
                 \begin{tabular}{c}
-                    $h_i \leftarrow (g_{ii} + g_{ji})(f_{ii} - f_{ji}) + z_{ii} + z_{ji}$
+                    $h_i \leftarrow (g_{ii} + g_{ji})(f_{ii} - f_{ji}) + z_{ii} + z_{ji}$ \\
+                    $h \leftarrow \sum_{k \in \{i,j,s\}} h_k \prod_{\ell \neq k} \frac{- x_\ell}{x_k - x_\ell}$
                 \end{tabular}
             };
             
-            \node[calc, right = of Pj] (j) { \footnotesize
+            \node[calc] (j) at (6.5,-1){ \footnotesize
                 \begin{tabular}{c}
-                    $h_j \leftarrow (g_{ij} + g_{jj}) (f_{ij} - f_{jj}) + z_{ij} + z_{jj}$
+                    $h_j \leftarrow (g_{ij} + g_{jj}) (f_{ij} - f_{jj}) + z_{ij} + z_{jj}$ \\
+                    $h \leftarrow \sum_{k \in \{i,j,s\}} h_k \prod_{\ell \neq k} \frac{- x_\ell}{x_k - x_\ell}$
                 \end{tabular}
             };
             
@@ -275,9 +277,9 @@ $$
                 \end{tabular}
             };
             
-            
-            \draw[edge] (Pj) to node[sloped,midway,below] {$h_j$} (Pi);
-            \draw[edge] (Ps) to node[sloped,midway,above] {$h_s$} (Pi);
+            \draw[edge] (Pi) to node[midway,below] {$h_i$} (BC);
+            \draw[edge] (Pj) to node[midway,below] {$h_j$} (BC);
+            \draw[edge] (Ps) to node[midway,right] {$h_s$} (BC);
             
         
         \end{tikzpicture}
@@ -285,6 +287,10 @@ $$
 \caption{Step 3}
 \end{figure}
 
+\textbf{Fourth step:} $P_i$,$P_j$ compute $A_i=a^{\frac{1}{h(0)}(g_i(x_i)+g_j(x_i))}$, $A_j=a^{\frac{1}{h(0)}(g_i(x_j)+g_j(x_j))}$ respectively. $P_j$ shares $A_j$ with $P_i$.
+
+$P_j$ can interpolate the exponents of $A_i$ and $A_j$ and compute $a^{\frac{g_i(0)+g_j(0)}{h(0)}} = a^{\frac{v}{v(\alpha_i - \alpha_j)}} = a^{\frac{1}{\alpha_i-\alpha_j}}$.
+
 \begin{figure}
         \begin{center}
         \begin{tikzpicture}[node distance=0.5cm]
@@ -298,19 +304,18 @@ $$
             
             \node[calc, left = of Pi] (i) { \footnotesize
                 \begin{tabular}{c}
-                    $h \leftarrow \sum_{k \in \{i,j,s\}} h_k \prod_{\ell \neq k} \frac{- \alpha_\ell}{\alpha_k - \alpha_\ell}$ \\
-                    $A \leftarrow a^{\frac{1}{h}}$ \\
-                    $G_i \leftarrow g_{ii} + g_{ji}$
+                    $A_i \leftarrow a^{\frac{1}{h}(g_{ii} + g_{ji})}$ \\
                 \end{tabular}
             };
             
             \node[calc, right = of Pj] (j) { \footnotesize
                 \begin{tabular}{c}
-                    $G_j \leftarrow g_{ij} + g_{jj}$
+                    $A_j \leftarrow a^{\frac{1}{h}(g_{ij} + g_{jj})}$ \\
+                    $B \leftarrow A_i^{\frac{-x_j}{x_i-x_j}} A_j^{\frac{-x_i}{x_j-x_i}}$
                 \end{tabular}
             };
             
-            \draw[edge] (Pi) to node[sloped,midway,above] {$A$} (Pj);
+            \draw[edge] (Pi) to node[sloped,midway,above] {$A_i$} (Pj);
                         
         
         \end{tikzpicture}
@@ -318,6 +323,8 @@ $$
 \caption{Step 4}
 \end{figure}
 
+\textbf{Fifth step:} $P_j$ computes $B^{-\alpha_j} = a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}$ and shares it with $P_i$. 
+
 \begin{figure}
         \begin{center}
         \begin{tikzpicture}[node distance=0.5cm]
@@ -331,22 +338,39 @@ $$
                         
             \node[calc, left = of Pi] (i) { \footnotesize
                 \begin{tabular}{c}
-                    $A_i \leftarrow A^{G_i}$ \\
-                    Output $\leftarrow A_i^{\frac{-x_j}{x_i-x_j}} A_j^{\frac{-x_i}{x_j-x_i}}$
+                    Output: B'
                 \end{tabular}
             };
             
             \node[calc, right = of Pj] (j) { \footnotesize
                 \begin{tabular}{c}
-                    $A_j \leftarrow A^{G_j}$
+                    $B' \leftarrow B^{-\alpha_j}$
                 \end{tabular}
             };
             
-            \draw[edge] (Pj) to node[sloped,midway,above] {$A_j$} (Pi);
+            \draw[edge] (Pj) to node[sloped,midway,above] {$B'$} (Pi);
                         
         
         \end{tikzpicture}
         \end{center}
 \caption{Step 5}
-
 \end{figure}
+
+\subsubsection*{Partial signature}
+Let $P = \{P_i, P_{j_1}, \dots , P_{j_{t-1}} \}$.
+
+For $P_i$ to compute the partial signature over a message $m$, computes $\sigma_i(m) = (a_{t-1})^{s_i}$ where $a_k \leftarrow \mathcal{B}(a_{k-1},P_i,P_{j_k})$ for $k \in \{1, ... , t-1 \}$ and $a_0 = H(m)$
+
+\subsubsection*{Signature}
+The signature $\sigma(m)$ on a message $m$ from a group of $t$ participants $P = \{P_1, ... , P_t \}$ is
+$$\sigma(m) = \prod_{i=1}^m \sigma_i(m)$$.
+
+$$
+\sigma_i (m)
+= a_{t-1} {}^{\frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
+= a_k {}^{\frac{- \alpha_{j_{k}}}{\alpha_{i} - \alpha_{j_{k}}} \cdots \frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
+= a_1 {}^{\frac{- \alpha_{j_{1}}}{\alpha_{i} - \alpha_{j_{1}}} \cdots \frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
+= H(m)^{ s_i \frac{- \alpha_{j_{1}}}{\alpha_{i} - \alpha_{j_{1}}} \cdots \frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
+$$
+
+\subsection{Analysis}\
