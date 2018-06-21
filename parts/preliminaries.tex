@@ -11,7 +11,7 @@ Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Le
 
 \defn Computation Diffie-Hellman (CDH) Problem: Given a randomly chosen $g \in G_1$, $g^a$, and $g^b$ (for unknown randomly chosen $a,b \in \ZZ_q$), compute $g^{ab}$.
 
-\defn Decision Diffie-Hellman (CDH) Problem: Given randomly chosen $g \in G_1$, $g^a$, $g^b$, and $g^c$ (for unknown randomly chosen $a,b,c \in \ZZ_q$), decide whether $c = ab$. (If so, $(g, g^a, g^b, g^c)$ is called a valid Diffie-Hellman tuple.)
+\defn Decision Diffie-Hellman (DDH) Problem: Given randomly chosen $g \in G_1$, $g^a$, $g^b$, and $g^c$ (for unknown randomly chosen $a,b,c \in \ZZ_q$), decide whether $c = ab$. (If so, $(g, g^a, g^b, g^c)$ is called a valid Diffie-Hellman tuple.)
 
 \defn Computational co-Diffie-Hellman (co-CDH) Problem on $(G_1, G_2)$: Given $g_2, g^a_2 \in G_2$ and $h \in G_1$ as input, compute $h^a \in G_1$.
 
@@ -27,9 +27,11 @@ Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Le
 
 \defn A Gap co-Diffie-Hellman (co-GDH) group pair is a pair of groups $(G_1, G_2)$ on which co-DDH is easy but co-CDH is hard. When $(G_1, G_1)$ is a co-GDH group pair, we say $G_1$ is a Gap group (GDH).
 
+\remk If there s a bilinear map on $G_1, G_2$, then they are a co-GDH group pair. If there is a bilinear map over $G_1 \times G_1$, then $G_1$ is a gap group, since one can use the bilinear map to solve the DDH problem.
+
 \section{Oblivious Polynomial Evaluation}
 
-Oblivious polynomial evaluation is a protocol involving two parties, a sender whose input is a polynomial $P$, and a receiver whose input is a value $\alpha$. Ath the end of the protocol, the receiver learns $P(\alpha)$ and the sender learns nothing.
+Oblivious polynomial evaluation is a protocol involving two parties, a sender whose input is a polynomial $P$, and a receiver whose input is a value $\alpha$. At the end of the protocol, the receiver learns $P(\alpha)$ and the sender learns nothing.
 
 Generic Protocol:
 
@@ -69,7 +71,7 @@ The receiver chooses a random polynomial $S$ of degree $k$, such that $S(0) = \a
 
 Define $R(x) = Q( x, S(x))$.
 
-\newpage
+\cite{OPE}
 
 \section{Homomorphic PKE}
 
@@ -78,7 +80,7 @@ To ensure integrity of data in communications and authentication, the concept of
 
 A digital signature scheme consists of 3 algorithms:
 \begin{itemize}
-    \item \textbf{Key generation}: on input of a security parameter $k$ (usually the length), outputs a pair $(sk, pk)$ of secret and public keys.
+    \item \textbf{Key generation}: on input of a security parameter $k$ (usually the desired length for the keys), outputs a pair $(sk, pk)$ of secret and public keys.
     \item \textbf{Signature}: given an input message $m$ and the secret key $sk$, outputs a signature $\sigma$.
     \item \textbf{Verification}: given an input message $m$, a signature $\sigma$ on the message and a public key $pk$, outputs whether the signature is valid or not.
 \end{itemize}
@@ -184,11 +186,11 @@ Let $G$ be a gap group of some prime order $p$. Let $g \in G$ be a generator of 
 
 Let $\mathcal{P}= \{ 1, \dots , n \}$ be the set of participants in this scheme. Suppose every participant $P_i \in \mathcal{P}$ is given a distinct random number $x_i \in \ZZ_p$ as in the Shamir Secret Sharing Scheme.
 
-Let $SK \in \ZZ_p$ be the secret key of the scheme. Let $q(x) = \sum_{i=0}^{k-1} a_i x^i$ be a random polynomial of degree $k-1$ but fixing $a_0 = SK$.
+Let $SK \in \ZZ_p$ be the secret key of the scheme. Let $q(x) = \sum_{i=0}^{t-1} a_i x^i$ be a random polynomial of degree $t-1$ but fixing $a_0 = SK$.
 
 Each participant $P_i$ is given the share $s_i = q(x_i)$.
 
-So $$SK = \sum_{i \in P} s_i \lambda_i^P$$
+Then, for any set $P \subseteq \PP$ of $t$ participants $$SK = \sum_{i \in P} s_i \lambda_i^P$$
 
 To sign a message $m$, each participant $P_i$ computes his partial signature $\sigma_i (m) = H(m)^{s_i}$ and broadcasts the pair $(x_i, \ \sigma_i (m))$.
 

@@ -5,7 +5,7 @@
 
 An access structure $\Gamma$ is the set of all subsets of $\PP$ that can recover the secret.
 
-\defn Let $\PP := \{ P_1, \dots, P_n \}$ be a set of participants. A \textit{monotone access structure} $\Gamma$ on $\PP$ is a subset $\Gamma \subseteq 2^{\PP}$, such that $$ A \in \Gamma, \quad A \subseteq A' \subseteq \PP \Rightarrow A' \in \Gamma $$
+\defn Let $\PP := \{ P_1, \dots, P_n \}$ be a set of participants. A \textit{monotone access structure} $\Gamma$ on $\PP$ is a subset $\Gamma \subseteq 2^{\PP}$, which is monotone increasing $$ A \in \Gamma, \quad A \subseteq A' \subseteq \PP \Rightarrow A' \in \Gamma $$
 
 \defn Let $\PP := \{ P_1, \dots, P_n \}$ be a set of participants and let $A \subseteq 2^{\PP}$. The \textit{closure} of $A$, denoted $\cl (A)$, is the set $$ \cl (A) = \{ C: \exists B \in A \text{ s.t. } B \subseteq C \subseteq \PP \}$$
 
@@ -13,7 +13,7 @@ For a monotone access structure $\Gamma$ we have $\Gamma = \cl (\Gamma)$.
 
 \defn Let $\Gamma$ be an access structure on a set of participants $\PP$. $B \in \Gamma$ is a \textit{minimal} qualified set if $A \notin \Gamma$ whenever $A \subsetneq B$.
 
-\defn Let $\Gamma$ be an access structure on a set of participants $\PP$. The family of minimal qualified sets $\Gamma_{0}$ of $\Gamma$ is called a \textit{basis} of $\Gamma$.
+\defn Let $\Gamma$ be an access structure on a set of participants $\PP$. The family of minimal qualified sets $\Gamma_{0}$ of $\Gamma$ is called the \textit{basis} of $\Gamma$.
 
 For a basis $\Gamma_0$ of an access structure $\Gamma$ we have $\Gamma = \cl (\Gamma_{0})$
 
@@ -40,4 +40,4 @@ Let $\{p_{\KK} (\kk) \}_{\kk \in \KK}$ be a probability distribution on $\KK$, a
 
 \defn An \textit{ideal secret sharing scheme} is a secret sharing scheme for which $\vert \KK \vert = \vert \SS \vert$. An access structure admitting an ideal secret sharing scheme will be referred as \textit{ideal access structure}.
 
-\thm Let $\acc$ be an access structure on a set of participants $\PP$. An ideal anonymous secret sharing scheme for $\acc$ exists if and only if either $\acc$ is a $(1,\vert \PP \vert)$ threshold structure, a $(\vert \PP \vert, \vert \PP \vert)$ threshold structure, or the closure of a complete bipartite graph.
+\thm \sout{Let $\acc$ be an access structure on a set of participants $\PP$. An ideal anonymous secret sharing scheme for $\acc$ exists if and only if either $\acc$ is a $(1,\vert \PP \vert)$ threshold structure, a $(\vert \PP \vert, \vert \PP \vert)$ threshold structure, or the closure of a complete bipartite graph.}
