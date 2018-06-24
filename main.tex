@@ -65,34 +65,26 @@
 \clearpage{\thispagestyle{empty}\cleardoublepage}
 \input{parts/acknowledgements}
 \clearpage{\thispagestyle{empty}\cleardoublepage}
-{\tableofcontents
+\tableofcontents
 \clearpage{\thispagestyle{empty}\cleardoublepage}
 
-% To force the figures to appear:
-\setcounter{tocdepth}{2}
-%\addcontentsline{toc}{section}{List of Figures}
-\setcounter{tocdepth}{2}
 \listoffigures
 \clearpage{\thispagestyle{empty}\cleardoublepage}
 
-%\addcontentsline{toc}{section}{List of Tables}
-%\newpage\null\thispagestyle{empty}\newpage
 \listoftables
 \clearpage{\thispagestyle{empty}\cleardoublepage}
-%\thispagestyle{plain}
-%\addcontentsline{toc}{section}{Nomenclature}
-%\printnomenclature
-%\newpage{\cleardoublepage}
 
-\clearpage
-\pagestyle{fancy}
-\setlength{\parskip}{3mm plus1mm minus1.5mm}
-%\thispagestyle{empty}
-%\pagenumbering{arabic}
+%\printnomenclature
+
+
+%\setlength{\parskip}{3mm plus1mm minus1.5mm}
+
 \mainmatter
 \input{parts/intro}
 \clearpage{\thispagestyle{empty}\cleardoublepage}
 \input{parts/preliminaries}
+\clearpage{\thispagestyle{empty}\cleardoublepage}
+\input{parts/anonymity}
 \clearpage{\thispagestyle{empty}\cleardoublepage}
 \input{parts/single_use}
 \clearpage{\thispagestyle{empty}\cleardoublepage}
@@ -101,7 +93,9 @@
 \input{parts/conclusions}
 
 \clearpage{\thispagestyle{empty}\cleardoublepage}
-\printbibliography
+\phantomsection
 \addcontentsline{toc}{chapter}{Bibliography}
+\printbibliography
+
 
 \end{document}
