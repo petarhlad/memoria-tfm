@@ -16,13 +16,13 @@ Example:
 
 
 \section{Oblivious Polynomial Evaluation}
-Oblivious polynomial evaluation is a protocol involving two parties, a sender whose input is a polynomial $P$, and a receiver whose input is a value $\alpha$. At the end of the protocol, the receiver learns $P(\alpha)$ and the sender learns nothing.
+Oblivious polynomial evaluation is a protocol involving two parties, a sender whose input is a polynomial $P \in \FF[x]$, and a receiver whose input is a value $\alpha \in \FF$. At the end of the protocol, the receiver learns $P(\alpha)$ and the sender learns nothing.
 
 \subsection{Noisy Polynomial problem}
 
 \citeauthor{OPE} proposed in \cite{OPE} a protocol for Oblivious Polynomial Evaluation that relies on the hardness of the Noisy Polynomial Reconstruction problem.
 
-The description of the protocol follows:
+Generic Protocol:
 
 \begin{itemize}
     \item Input:
@@ -43,27 +43,67 @@ The description of the protocol follows:
     
 \end{itemize}
 
-Protocol:
+Generic protocol for oblivious polynomial evaluation:
 
-1. The sender hides $P$ in a bivariate polynomial:
+\begin{itemize}[align = left, leftmargin=*]
 
-The sender generates a random masking polynomial $P_x (x)$ of degree $d$ s.t. $P_x (0) = 0$.
+\item[\textbf{1. The sender hides $P$ in a bivariate polynomial:}]
+
+The sender generates a random masking polynomial $P_x (x)$ of degree $d$, s.t. $P_x (0) = 0$, where $d = k \cdot d_P$.
 $$P_x (x) = \sum_{i=1}^{d} a_i x^i$$
-where $d = k \cdot d_P$.
 
 The sender defines a bivariate polynomial
 $$ Q(x,y) = P_x(x) + P(y) = \sum_{i=1}^{d} a_i x^i + \sum_{i=0}^{d_P} b_i y^i $$
 
-2. The receiver hides $\alpha$ in a univariate polynomial:
+\item[\textbf{2. The receiver hides $\alpha$ in a univariate polynomial:}]
 
 The receiver chooses a random polynomial $S$ of degree $k$, such that $S(0) = \alpha$.
 
-Define $R(x) = Q( x, S(x))$.
+Define $R(x) = Q( x, S(x))$. The goal of the receiver is to use $R(x)$ to learn $P(\alpha)$. Note that $R(0) = Q(0,S(0)) = P(S(0)) = P(\alpha)$.
+
+\item[\textbf{3. The receiver learns points of R:}] The receiver learns $d_R + 1$ values of the form $\left\langle x_i , R(x_i) \right\rangle$.
+
+\item[\textbf{4. The receiver computes $P(\alpha)$:}] The receiver uses the values of $R$ that it learned to interpolate $R(0)=P(\alpha)$.
+
+\end{itemize}
+
+The key is in the third step on how the receiver learns $d_R + 1$ evaluations of $R(x)$ in a secure way.
+
+\begin{itemize}[align = left, leftmargin=*]
+\item The receiver sets $n = d_R + 1$ and chooses $N = nm$ distinct random values $x_1, \cdots, x_N \in \FF$, all different from $0$.
+
+\item The receiver chooses a random set $T$ of $n$ indices $1 \leq i_1 < i_2 < \cdots < i_n \leq N$. Then defines $N$ values $y_i$:
+    $$y_i = 
+        \begin{cases}
+            S(x_i)        & \mbox{if } i \in T \\
+            y_i \in_R \FF & \mbox{if } i \notin T
+        \end{cases} $$
+        
+\item The receiver sends the $N$ points $\{(x_i, y_i)\}^N_{i=1}$ to the sender.
+
+\item The receiver and sender execute an $n$-out-of-$N$ oblivious transfer protocol, for the $N$ values $Q(x_i,y_i)$. The receiver chooses to learn $\{Q(x_i,y_i)\}_{i\in T}$
+\end{itemize}
 
 
-\subsection{Homorphic PKE}
+\subsection{Homomorphic PKE}
+Let $¿?$ be a Homomorphic Public Key Encryption Scheme with (¿possibly probabilistic?) encoding and decoding functions $\E: G \rightarrow H$ and $\D: H \rightarrow G$. Where $(G,\bullet)$ and $(H,\circ)$ are groups.
+
+We will write $G$ additively, and $H$ multiplicatively.
+
+The sender knows a polynomial $P(x) = \sum_{i=0}^d a_i x^i$ with $a_i \in \ZZ$ of degree $d$ which can be evaluated on the group $G$. 
+
+The receiver encrypts the powers of $\alpha$: $\beta_i \leftarrow \E(\alpha^i)$ for $i \in \{0, ..., d\}$ and sends them to the sender.
+
+The sender uses the homomorphic property of the encryption scheme to compute $\beta = \E(P(\alpha)) \leftarrow \beta_0^{a_0} \cdot \beta_1^{a_1} \cdot ... \cdot \beta_n^{a_n}$ and sends it to the receiver.
+
+The receiver decrypts the received value to get $P(\alpha)$:
+$\D(\beta) = \D(\E(P(\alpha))) = P(\alpha) $
+
+
+
 
 \section{Secret Sharing}
+\subsection{Definitions}
 Definition of access structures and secret sharing
 
 \cite{Phillips1992}
@@ -106,100 +146,34 @@ Let $\{p_{\KK} (\kk) \}_{\kk \in \KK}$ be a probability distribution on $\KK$, a
 
 \defn An \textit{ideal secret sharing scheme} is a secret sharing scheme for which $\vert \KK \vert = \vert \SS \vert$. An access structure admitting an ideal secret sharing scheme will be referred as \textit{ideal access structure}.
 
-\thm \sout{Let $\acc$ be an access structure on a set of participants $\PP$. An ideal anonymous secret sharing scheme for $\acc$ exists if and only if either $\acc$ is a $(1,\vert \PP \vert)$ threshold structure, a $(\vert \PP \vert, \vert \PP \vert)$ threshold structure, or the closure of a complete bipartite graph.}
+%\thm \sout{Let $\acc$ be an access structure on a set of participants $\PP$. An ideal anonymous secret sharing scheme for $\acc$ exists if and only if either $\acc$ is a $(1,\vert \PP \vert)$ threshold structure, a $(\vert \PP \vert, \vert \PP \vert)$ threshold structure, or the closure of a complete bipartite graph.}
 
-Shamir as example
+\subsection{Shamir Secret Sharing}
+Shamir secret sharing described in \cite{Sham79}.
 
-Anonymous secret sharing
+The scheme is based on polynomial interpolation.
 
+Let $p$ be a large prime number. All operations are done in $\ZZ_p$
 
-\section{Digital Signatures}
-Definition and examples
+We want to share a secret $s$ into $n$ shares so that the secret can be recovered with any $k$ distinct shares.
 
-\section{Group Signatures}
-(With linkability)
+Let $q(x) = a_0 + a_1 x + \cdots + a_{k-1} x^{k-1}$ be a random polynomial of degree $k-1$ in which $a_0 = s$.
 
-\section{Threshold Digital Signatres}
-Definition and example (shamir)
+Each participant $i$ in $\PP = \{ 1, ... , n \}$ is given a different random number $x_i \in \ZZ_p$ which identifies the participant.
+Then, each participant $i$ is given the share $y_i = q(x_i)$.
 
+To recover the secret, we only need $k$ different shares. Let $P \subset \PP$ be any subset of $k$ participants. Then
 
-\newpage
+Let $\lambda_i^{P} = \prod_{P_j \in (P \setminus P_i)} \frac{-x_j}{x_i - x_j}$
 
+$$
+    q(x) = \sum_{i \in P} y_i \prod_{\substack{j \in P \\ i \neq j}} \frac{x-x_j}{x_i-x_j}
+$$
 
+Then, $s = q(0)$.
 
+\subsection{Anonymous secret sharing}
 
-\newpage
-
-\section{Bilinear pairings}
-\cite{DiHe76}
-
-Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Let $g_1$ be a fixed generator of $G_1$ and $g_2$ be a fixed generator of $G_2$.
-
-\defn Computation Diffie-Hellman (CDH) Problem: Given a randomly chosen $g \in G_1$, $g^a$, and $g^b$ (for unknown randomly chosen $a,b \in \ZZ_q$), compute $g^{ab}$.
-
-\defn Decision Diffie-Hellman (DDH) Problem: Given randomly chosen $g \in G_1$, $g^a$, $g^b$, and $g^c$ (for unknown randomly chosen $a,b,c \in \ZZ_q$), decide whether $c = ab$. (If so, $(g, g^a, g^b, g^c)$ is called a valid Diffie-Hellman tuple.)
-
-\defn Computational co-Diffie-Hellman (co-CDH) Problem on $(G_1, G_2)$: Given $g_2, g^a_2 \in G_2$ and $h \in G_1$ as input, compute $h^a \in G_1$.
-
-\defn Decision co-Diffie-Hellman (co-DDH) on $(G_1, G_2)$: Given $g_2, g^a_2 \in G_2$ and $h, h^b \in G_1$ as input, decide whether $a=b$. If so, we say that $(g_2, g^a_2, h, h^a)$ is a co-Diffie-Hellman tuple.
-
-\defn Bilinear map: Let $G_T$ be an additional group such that $ |G_1| = |G_2| = |G_T| $. A bilinear map is a map $e: G_1 \times G_2 \rightarrow G_T$ with the following properties:
-\begin{enumerate}
-
-\item Bilinear: for all $u \in G_1, v \in G_2$ and $a,b \in \ZZ$, $e(u^a, v^b) = e(u,v)^{ab}$.
-\item Non-degenerate: $e(g_1, g_2) \neq 1$.
-
-\end{enumerate}
-
-\defn A Gap co-Diffie-Hellman (co-GDH) group pair is a pair of groups $(G_1, G_2)$ on which co-DDH is easy but co-CDH is hard. When $(G_1, G_1)$ is a co-GDH group pair, we say $G_1$ is a Gap group (GDH).
-
-\remk If there s a bilinear map on $G_1, G_2$, then they are a co-GDH group pair. If there is a bilinear map over $G_1 \times G_1$, then $G_1$ is a gap group, since one can use the bilinear map to solve the DDH problem.
-
-\section{Oblivious Polynomial Evaluation}
-
-Oblivious polynomial evaluation is a protocol involving two parties, a sender whose input is a polynomial $P$, and a receiver whose input is a value $\alpha$. At the end of the protocol, the receiver learns $P(\alpha)$ and the sender learns nothing.
-
-Generic Protocol:
-
-\begin{itemize}
-    \item Input:
-    
-    \begin{itemize}
-        \item Sender: a polynomial $P(y) = \sum_{i=0}^{d_P} b_i y^i$ of degree $d_P$ in the field $\FF$.
-        \item Receiver: a value $\alpha \in \FF$
-    \end{itemize}
-    
-    \item Output:
-    
-    \begin{itemize}
-        \item Sender: nothing.
-        \item Receiver: $P(\alpha)$
-    \end{itemize}
-    
-    \item Protocol security parameters: $m$, $k$.
-    
-\end{itemize}
-
-Protocol:
-
-1. The sender hides $P$ in a bivariate polynomial:
-
-The sender generates a random masking polynomial $P_x (x)$ of degree $d$ s.t. $P_x (0) = 0$.
-$$P_x (x) = \sum_{i=1}^{d} a_i x^i$$
-where $d = k \cdot d_P$.
-
-The sender defines a bivariate polynomial
-$$ Q(x,y) = P_x(x) + P(y) = \sum_{i=1}^{d} a_i x^i + \sum_{i=0}^{d_P} b_i y^i $$
-
-2. The receiver hides $\alpha$ in a univariate polynomial:
-
-The receiver chooses a random polynomial $S$ of degree $k$, such that $S(0) = \alpha$.
-
-Define $R(x) = Q( x, S(x))$.
-
-\cite{OPE}
-
-\section{Homomorphic PKE}
 
 \section{Digital Signatures}
 To ensure integrity of data in communications and authentication, the concept of digital signatures was developed. 
@@ -241,6 +215,7 @@ The use of $H( \cdot )$ prevents an existential forgery attack.
 \end{itemize}
 
 \subsubsection*{Boneh-Lynn-Shacham (BLS)}
+\label{sec:bls}
 \cite{BonehLS01}
 Let $G_1,G_2$ be a bilinear group pair of prime order $p$. Let $g$ be a generator of $G_1$. Let $e:G_1 \times G_2 \rightarrow G_T$ be a non-degenerate bilinear pairing. Let $H: \{0,1\}^* \rightarrow G_1$ be a full-domain hash function.
 
@@ -266,11 +241,8 @@ The signature on $m$ is $\sigma = (c,s)$.
 	\item[\textbf{Verification.}] Given a signature $\sigma$ and a public key $y$, computes $L^{\dagger} := g^{s} y^{-c}$ and then check that $c = H(L^{\dagger} \parallel m) $
 \end{itemize}
 
-\section{Signature Aggregation}
-Explain how different signature schemes allow aggregation of n signatures on n messages from n signers.
-
-\newpage
 \section{Group Signatures}
+(With linkability)
 Use of aggregation: group signatures. They are used to sign on behalf of the group, prove group membership.
 
 The easiest way is to give everyone the secret key, so they can sign. But this would let any colluded user to share the secret key to other parties, which is not admissible.
@@ -279,76 +251,62 @@ Some group signatures need what is called a Dealer, which will deal with the key
 
 Examples of Group signatures:
 
-\section{Shamir Secret Sharing}
-Shamir secret sharing described in \cite{Sham79}.
+\section{Threshold Digital Signatres}
+Definition and example (shamir)
 
-The scheme is based on polynomial interpolation.
-
-Let $p$ be a large prime number. All operations are done in $\ZZ_p$
-
-We want to share a secret $s$ into $n$ shares so that the secret can be recovered with any $k$ distinct shares.
-
-Let $q(x) = a_0 + a_1 x + \cdots + a_{k-1} x^{k-1}$ be a random polynomial of degree $k-1$ in which $a_0 = s$.
-
-Each participant $i$ in $\PP = \{ 1, ... , n \}$ is given a different random number $x_i \in \ZZ_p$ which identifies the participant.
-Then, each participant $i$ is given the share $y_i = q(x_i)$.
-
-To recover the secret, we only need $k$ different shares. Let $P \subset \PP$ be any subset of $k$ participants. Then
-
-Let $\lambda_i^{P} = \prod_{P_j \in (P \setminus P_i)} \frac{-x_j}{x_i - x_j}$
-
-$$
-    q(x) = \sum_{i \in P} y_i \prod_{\substack{j \in P \\ i \neq j}} \frac{x-x_j}{x_i-x_j}
-$$
-
-Then, $s = q(0)$.
-
-\section{Threshold signature scheme using Shamir}
+\subsection{Shamir}
 \label{sec:shamir_sig}
 
-This signature scheme will be based on the BLS scheme.
+This signature scheme is based on the BLS scheme (see section \ref{sec:bls}).
 
-Let $G$ be a gap group of some prime order $p$. Let $g \in G$ be a generator of the group.
+\subsubsection*{Setup Algorithm}
 
-Let $\mathcal{P}= \{ 1, \dots , n \}$ be the set of participants in this scheme. Suppose every participant $P_i \in \mathcal{P}$ is given a distinct random number $x_i \in \ZZ_p$ as in the Shamir Secret Sharing Scheme.
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item Let $\mathcal{P}= \{ P_1, \dots , P_n \}$ be the set of participants. Let $G$ be a gap group of large prime order $p > n$. Let $g \in G$ be a generator of the group.
 
-Let $SK \in \ZZ_p$ be the secret key of the scheme. Let $q(x) = \sum_{i=0}^{t-1} a_i x^i$ be a random polynomial of degree $t-1$ but fixing $a_0 = SK$.
+\item Let $sk \in_R \ZZ_p$ be the secret key of the threshold signature scheme. Set $pk = g^{sk}$ the public key. Let $P(x)$ be a random polynomial over $\ZZ_p$ of degree $t-1$ with $P(0) = sk$.
 
-Each participant $P_i$ is given the share $s_i = q(x_i)$.
+\item Let $\alpha_1, ..., \alpha_n \in_R \ZZ_p$ all distinct. Each participant $P_i \in \PP$ is assigned a public key $pk_i = \alpha_i$ and a secret key $sk_i = s_i := P(\alpha_i)$.
 
-Then, for any set $P \subseteq \PP$ of $t$ participants $$SK = \sum_{i \in P} s_i \lambda_i^P$$
-
-To sign a message $m$, each participant $P_i$ computes his partial signature $\sigma_i (m) = H(m)^{s_i}$ and broadcasts the pair $(x_i, \ \sigma_i (m))$.
-
-Then, after a set $P$ of at least $t$ participants has broadcast their partial signatures for the message, a standard signature $\sigma$ can be computed:
-
-$$ \sigma (m) = \prod_{P_i \in P} \sigma_i (m)^{\lambda_i^{P}}= H(m)^{\sum_{P_i \in P} \lambda_i^P s_i} = H(m)^{SK}$$
-
-The signature is valid if $e(\sigma, g) = e(H(m), PK)$
-
-\section{Anonymity}
-
-In order to compare different schemes we need to clear up the definition of anonymity.
-
-The word anonymity is derived from the Greek word \textit{anonymia}, meaning "without a name". In technical terms, the "name" of a participant would be something that uniquely identifies him, e.g. his public key. So, a scheme would be anonymous if the public key of the participant is not disclosed or cannot be obtained in any way at any moment.
-
-It is not very intuitive how we can punt the concept of anonymity in a signature scheme. An anonymous signature does not make much sense. There is no use of an information signed by an anonymous person. What is useful is a signature from a known group of people, but cannot determine from which one nor distinguish two signatures of different participants of the same group on the same message.
-
-- Absolute anonymity. No use. Same as no signature
-- Anonymity inside a group. 
-
-
-
-You could use ring signatures which proofs the knowledge of a 1-out-of-N secret key. This could be useful for a small amount of signatures. But it is not useful to provide general anonymity.
-
-A signature scheme provides anonymity if:
-\begin{itemize}
-    \item Unlinkability: cannot decide whether two different signatures were signed by the same user.
-    \item Untraceability: cannot get the public key of the signer from a valid signature.
 \end{itemize}
 
-\cite{BlSt97} 
+Note that, for any set $\{P_{i_1}, ... , P_{i_t} \} = P \subseteq \PP$ of $t$ participants: $$sk = P(0) = \sum_{j = 1}^t s_{i_j} \lambda_{i_j}^P$$ where $\lambda_{i_j}^P := \prod_{k \in [t] \setminus \{j\}} \frac{-\alpha_k}{\alpha_j - \alpha_k}$
 
-An ideal secret sharing scheme is a scheme in which the size of the shares given to each participant is equal to the size of the secret.
+\subsubsection*{Signing Algorithm}
+\begin{itemize}[align = left, leftmargin=*, label={--}]
 
-In an anonymous secret sharing schemes the secret can be reconstructed without the knowledge of which participants hold which shares.
+\item Let $P = \{P_{i_1}, ..., P_{i_t} \}$ be a set of $t$ participants. Each participant $P_{i_j}$ computes his partial signature $\sigma_{i_j} (m) = H(m)^{s_{i_j}}$ and broadcasts the pair $(\alpha_{i_j}, \ \sigma_{i_j} (m))$.
+
+\item The signature $\sigma$ on $m$ is computed: $$ \sigma (m) = \prod_{P_i \in P} \sigma_i (m)^{\lambda_i^{P}}= H(m)^{\sum_{P_i \in P} \lambda_i^P s_i} = H(m)^{sk}$$
+\end{itemize}
+
+\subsubsection*{Verifying Algorithm}
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item Let $e: G \times G \rightarrow G_t$ be a bilinear pairing. Let $\sigma$ be a signature on a message $m$.
+\item The signature $\sigma$ on $m$ is valid if and only if $e(\sigma, g) = e(H(m), pk)$
+\end{itemize}
+
+\section{Bilinear pairings}
+\cite{DiHe76}
+
+Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Let $g_1$ be a fixed generator of $G_1$ and $g_2$ be a fixed generator of $G_2$.
+
+\defn Computation Diffie-Hellman (CDH) Problem: Given a randomly chosen $g \in G_1$, $g^a$, and $g^b$ (for unknown randomly chosen $a,b \in \ZZ_q$), compute $g^{ab}$.
+
+\defn Decision Diffie-Hellman (DDH) Problem: Given randomly chosen $g \in G_1$, $g^a$, $g^b$, and $g^c$ (for unknown randomly chosen $a,b,c \in \ZZ_q$), decide whether $c = ab$. (If so, $(g, g^a, g^b, g^c)$ is called a valid Diffie-Hellman tuple.)
+
+\defn Computational co-Diffie-Hellman (co-CDH) Problem on $(G_1, G_2)$: Given $g_2, g^a_2 \in G_2$ and $h \in G_1$ as input, compute $h^a \in G_1$.
+
+\defn Decision co-Diffie-Hellman (co-DDH) on $(G_1, G_2)$: Given $g_2, g^a_2 \in G_2$ and $h, h^b \in G_1$ as input, decide whether $a=b$. If so, we say that $(g_2, g^a_2, h, h^a)$ is a co-Diffie-Hellman tuple.
+
+\defn Bilinear map: Let $G_T$ be an additional group such that $ |G_1| = |G_2| = |G_T| $. A bilinear map is a map $e: G_1 \times G_2 \rightarrow G_T$ with the following properties:
+\begin{enumerate}
+
+\item Bilinear: for all $u \in G_1, v \in G_2$ and $a,b \in \ZZ$, $e(u^a, v^b) = e(u,v)^{ab}$.
+\item Non-degenerate: $e(g_1, g_2) \neq 1$.
+
+\end{enumerate}
+
+\defn A Gap co-Diffie-Hellman (co-GDH) group pair is a pair of groups $(G_1, G_2)$ on which co-DDH is easy but co-CDH is hard. When $(G_1, G_1)$ is a co-GDH group pair, we say $G_1$ is a Gap group (GDH).
+
+\remk If there s a bilinear map on $G_1, G_2$, then they are a co-GDH group pair. If there is a bilinear map over $G_1 \times G_1$, then $G_1$ is a gap group, since one can use the bilinear map to solve the DDH problem.

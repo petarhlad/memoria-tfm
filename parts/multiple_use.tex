@@ -3,20 +3,57 @@ To achieve full anonymity we need some
 Multiple use 
 
 
-\section{Linear size anonymous threshold signature}
-\cite{DazaDSV09}
+\section{Constant size anonymous threshold signature}
+\citeauthor*{DazaDSV09} proposed in \cite{DazaDSV09} an anonymous threshold signature scheme that sets a $(t,n)$-threshold signature scheme based on Shamir's secret sharing over a partition of the set $\PP$ of participants.
 
-Based on Shamir's secret sharing scheme, this will set a $(t,n)$-threshold secret sharing scheme.
+\subsection{Description}
+\subsubsection*{Setup Algorithm}
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item Let $\PP = \{P_1 , \dots , P_n \}$ be the set of participants. Consider $d$ distinct partitions of $\PP$ into $r$ parts.
+$\PP^i = \{\PP^i_1, ... , \PP^i_r\}$ for $i \in \{1, ... , d\}$. This algorithm will set $d$ different threshold signature schemes, one for each partition of $\PP$.
 
-Setup Algorithm
+\item Let $p > n$ be a sufficiently large prime. Let $sk_i \in_R \ZZ_p$ be the secret key of the $i$-th threshold signature scheme. Let $P_i(x)$ be a random polynomial over $\ZZ_p$ of degree $t-1$ with ${P_i(0) = \mbox{sk}_i}$ for $i \in \{1, ..., d\}$.
 
-Let $\PP = \{P_1 , \dots , P_n \}$ be the set of participants.
+\item For $i \in \{1, ..., d\}$ let $\alpha^{(i)}_1, ... , \alpha^{(i)}_r \in_R \ZZ_p$ all distinct (for fixed $i$). Each participant $P_k \in \PP^i_j$ is given public key $pk^{(i)}_k = \alpha^{(i)}_j$ and secret key $sk^{(i)}_k = P_i(\alpha^{(i)}_j)$ for the $i$-th threshold signature scheme. 
+\end{itemize}
 
-The set of participants is divided into $r$ groups $\PP_1, \dots , \PP_r$, with each group consisting of $n/r$ participants ($\PP_i = \{P^i_1, \dots , P^i_{n/r}\}$). For simplicity, we assume that $r \vert n$.
+\subsubsection*{Signing Algorithm}
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item Let $\{P_{i_1}, ..., P_{i_t} \} \subseteq \PP$ a set of $t$ participants which will try to sign a message $m$.
 
-Let $q > n$ be a sufficiently large prime. Let $a_0, \dots , a_{t-1} \in_R \ZZ_q$, where $s=a_0 \in \ZZ_q$ is the secret key.
+\item A signature on $m$ over the $i$-th threshold signature scheme is attempted using the protocol described in section \ref{sec:shamir_sig} providing the message, the signature and the signature scheme over which is signed: $(m,\sigma, i)$.
 
-We set up a $(t,r)$-threshold signature scheme.
+\item If the signature fails (because $\alpha^{(i)}_{i_1}, ... , \alpha^{(i)}_{i_t}$ are not all distinct), a new signature on $m$ is attempted over a threshold signature scheme different from the previous tried.
+
+\item Eventually, the signature will succeed over a certain signature scheme.
+\end{itemize}
+
+\subsubsection*{Verifying Algorithm}
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item Let $(m, \sigma, i)$ be a signature on a message $m$. The verification is done using the verifying algorithm described in \ref{sec:shamir_sig}.
+\item Let $e$ be a bilinear pairing. The signature is valid if and only if $e(\sigma,g) = e(H(m),pk_i)$.
+\end{itemize}
+
+\subsection{Analysis}
+In this signature scheme it is not sure that any set of $t$ participants will be able to compute a signature on a given message. The probability of succeeding on signing a message depends on the parameters $t,n,r,d$ and how the partitions are made.
+
+To see the relation between these parameters and the probability of success, we will describe a few examples.
+
+Given $\{P_{i_1}, ... P_{i_t} \}$ a set of $t$ participants, they will succeed only if $\alpha^{(i)}_{i_1}, ..., \alpha^{(i)}_{i_t} $ are all distinct for a certain $i \in \{1, ...,d\}$. Hence, $t \leq r$.
+
+\subsubsection*{Random partitions}
+Suppose that for each participant $P_k \in \PP$ and for all $i \in \{1, ..., d\}$ the probability $Pr(P_k \in \PP^i_j) = \frac{1}{r}$.
+
+\subsubsection*{Deterministic partitions}
+
+
+To simplify the analysis, for each participant $P_k \in \PP$ we will consider the corresponding codeword in a (not necessary linear) code of length $d$ over an alphabet of size $r$ given by:
+$$c_k := (j_1, ... , j_d) \text{ iff } P_k \in \PP^i_{j_i} \quad \forall i \in \{1, ..., d\}$$
+
+
+\citeauthor{singleton} \cite{singleton}.
+
+This sets up a $(t,r)$-threshold signature scheme.
 
 When $t$ participants try to sign a message, there is a probability $p_{\text{fail}} = 1 - p_{\text{success}}$ that at least two participants belong to the same group. The probability that all $t$ participants belong to different groups is given by $p_{\text{success}} = \frac{\binom{r}{t} \left( \frac{n}{r} \right)^{t}}{\binom{n}{t}}$.
 
@@ -49,6 +86,7 @@ Some values:
 
 \section{Non-linear size anonymous threshold signature}
 \cite{ChenNW11}
+\subsection{Description}
 \subsubsection*{Setup Algorithm}
 
 Let $G_1$, $G_2$, $G_T$ be cyclic groups of sufficiently large prime order $q$. Two random generators $g_1 \in G_1$, $g_2 \in G_2$, and a bilinear pairing $\hat{t}: G_1 \times G_2 \rightarrow G_T$.
@@ -359,7 +397,7 @@ $P_j$ can interpolate the exponents of $A_i$ and $A_j$ and compute $a^{\frac{g_i
 \subsubsection*{Partial signature}
 Let $P = \{P_i, P_{j_1}, \dots , P_{j_{t-1}} \}$.
 
-For $P_i$ to compute the partial signature over a message $m$, computes $\sigma_i(m) = (a_{t-1})^{s_i}$ where $a_k \leftarrow \mathcal{B}(a_{k-1},P_i,P_{j_k})$ for $k \in \{1, ... , t-1 \}$ and $a_0 = H(m)$
+For $P_i$ to compute the partial signature over a message $m$, computes $\sigma_i(m) = a_{t-1}$ where $a_k \leftarrow \mathcal{B}(a_{k-1},P_i,P_{j_k})$ for $k \in \{1, ... , t-1 \}$ and $a_0 = H(m)^{s_i}$
 
 \subsubsection*{Signature}
 The signature $\sigma(m)$ on a message $m$ from a group of $t$ participants $P = \{P_1, ... , P_t \}$ is
