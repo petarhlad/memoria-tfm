@@ -97,20 +97,17 @@ $$ d > \frac{\log \binom{n}{t}}{\log r^t - \log (r^t - t! \binom{r}{t})} $$
         \includegraphics[scale=1.5]{images/phf.jpg}
     \end{center}
 
-    \caption{Values for the lower bound of $d$ where $\frac{n}{r} = 10^3$} 
+    \caption{Values for the lower bound of $d$ where $\frac{n}{r} = 10^3$}
+    \label{fig:phf} 
 \end{figure}
 
+The plot in Figure \ref{fig:phf} gives a hint that the bound might have limit when $r \rightarrow \infty$ fixing $\frac{n}{r}=c$ constant. Note that $r^t - t! \binom{r}{t} = \frac{t(t-1)}{2}r^{t-1} + o(r^{t-1})$ for fixed $t$. Using the inequality $ \left( \frac{n}{t} \right)^t \leq \binom{n}{t} \leq n^t$ and the previous approximation for $r \gg t$, we have:
+$$\frac{t \log \frac{n}{t}}{\log r + \log \frac{t(t-1)}{2}} \lesssim \frac{\log \binom{n}{t}}{\log r^t - \log (r^t - t! \binom{r}{t})} \lesssim \frac{t \log n}{\log r + \log \frac{t(t-1)}{2}}$$
 
-Table with sample values.
-
-To be anonymous, we need $n \geq 2r$.
-
-These schemes would be suitable for small values of $t$.
-
-
+Clearly, the limit when $r \rightarrow \infty$ and $n = c \cdot r$ ($c$ a constant), is $t$ on both sides of the inequality.
 
 \section{Linkable Group Signature Scheme}
-\cite{ChenNW11}
+\citeauthor{ChenNW11} proposed a $(t,n)$-threshold signature scheme in \cite{ChenNW11} using a group signature scheme where you can link two signatures on the same message but cannot link signatures on different messages. As one can link signatures on the same message, the threshold signature is simply a set of $t$ valid signatures on the same message such that no two are linked.
 \subsection{Description}
 \subsubsection*{Setup Algorithm}
 \begin{itemize}[align = left, leftmargin=*, label={--}]
@@ -126,79 +123,118 @@ Two integers are selected $x,y \in_R \ZZ_q$ and the issuer secret key \textbf{is
 
 \item The system public parameters $par$ are set to be $par = (G_1, G_2, G_T, \hat{t}, g_1, g_2, H_0, H_1, \text{ipk}_k)$ and are published.
 \end{itemize}
+
 \subsubsection*{Join protocol}
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item In this a protocol, an issuer $i \in \mathcal{I}$ computes a credential for a signer $\s \in S$ that allows him to compute valid signatures on messages.
 
-This is a protocol between a given signer $s \in S$  and an issuer $i \in \mathcal{I}$.
+\item The signer $\s$ randomly chooses the secret key $sk_\s = f \in_R \ZZ_p$ and computes the public key $pk_\s = F = g_1^f$.
+
+\item The issuer $\i$ randomly chooses $r \in_R \ZZ_q$ and computes $A = g_1^r$, $B = A^y$ and ${C = A^x F^{rxy}}$. The credential for $\s$ is set to be $cre_\s \leftarrow (A,B,C)$.
+\end{itemize}
+
+%\begin{figure}[H]
+%$$
+%\begin{array}{ccc}
+%    \text{Signer}(\mathfrak{s}) &    & \text{Issuer}(\mathfrak{i}) \\
+%    \hline
+%    \\
+%    f \in_R \ZZ_q, \ F = g_1^f &    &    \\
+%    \text{str} \leftarrow X \parallel Y \parallel n_I &  \xleftarrow{\text{comm}_{\text{req}}} & \text{comm}_{\text{req}} \leftarrow n_I \\
+%        & \longrightarrow & \text{If } F = g_1^{f_i} \text{ for any } f_i \text{ on the roge list then \textbf{abort}} \\
+%        &        & r\in_R \ZZ_q; \ A = g_1^r; \ B = A^y \\
+%    \text{If } \hat{t}(A,Y) \neq \hat{t}(B,g_2) & \xleftarrow{\text{  cre  }} & C = (A^x \cdot F^{rxy}); \ cre \leftarrow(A,B,C) \\
+%    \text{or } \hat{t}(A \cdot B^f , X) \neq \hat{t}(C,g_2) &    & \\
+%    \text{then \textbf{abort}} &    & \\
+%    \hline
+%\end{array} 
+%$$
+%\caption{The Join Protocol}
+%\label{fig:join}
+%\end{figure}
+
+\subsubsection*{Signing Algorithm}
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item Let $m \in \{0,1\}^\ast$ be the message that a signer $\s$ wants to sign where $sk_\s = f$, $pk_\s = F$ and $cre_\s = (A,B,C)$.
+
+\item $\s$ chooses $z \in_R \ZZ_q$ and computes $J=H_1(m)$, $K = J^f$ and $L = J^z$.
+
+\item $\s$ chooses $a \in_R \ZZ_q$ and randomizes its credential into $(R,S,T) \leftarrow (A^a,B^a,C^a)$, and computes $\tau = \hat{t}(S,X)^z$ where $X$ is from the issuer's public key.
+
+\item $\s$ computes $c \leftarrow H_0(R \con S \con T \con \tau \con J \con K \con L \con m)$ and sets $s = z + c \cdot f$.
+
+\item The signature on $m$ is set to be $\sigma = (R,S,T,J,K,L,c,s)$
 
 
-(Maybe could be a random $f \in G_1$)
-The signer generates a secret value $f$ using its internal seed \textbf{TAAseed}, along with the value \textbf{K}\textsubscript{I} provided by $i$ and a count number \textbf{cnt}.
+\end{itemize}
 
-\begin{figure}[H]
-$$
-\begin{array}{ccc}
-    \text{Signer}(\mathfrak{s}) &    & \text{Issuer}(\mathfrak{i}) \\
-    \hline
-    \\
-    f \in_R \ZZ_q, \ F = g_1^f &    &    \\
-    \text{str} \leftarrow X \parallel Y \parallel n_I &  \xleftarrow{\text{comm}_{\text{req}}} & \text{comm}_{\text{req}} \leftarrow n_I \\
-        & \longrightarrow & \text{If } F = g_1^{f_i} \text{ for any } f_i \text{ on the roge list then \textbf{abort}} \\
-        &        & r\in_R \ZZ_q; \ A = g_1^r; \ B = A^y \\
-    \text{If } \hat{t}(A,Y) \neq \hat{t}(B,g_2) & \xleftarrow{\text{  cre  }} & C = (A^x \cdot F^{rxy}); \ cre \leftarrow(A,B,C) \\
-    \text{or } \hat{t}(A \cdot B^f , X) \neq \hat{t}(C,g_2) &    & \\
-    \text{then \textbf{abort}} &    & \\
-    \hline
-\end{array} 
-$$
-\caption{The Join Protocol}
-\label{fig:join}
-\end{figure}
+The computation of $L$,$c$ and $s$ gives a non-interactive Zero-Knowledge Proof of Knowledge for $f$.
 
-\begin{figure}[H]
-$$\begin{array}{l}
-\text{Signer}(\mathfrak{s}) \\
-\hline
-\text{Input: } f \in \ZZ_q; \ n_T \leftarrow \{0,1\}^\ast; \ msg \\
-a \in_R \ZZ_q; \ z \in_R \ZZ_q \\
-J \leftarrow H_1(\text{msgt}); \ K = J^f; \ L = J^z \\
-R = A^a; \ S = B^a; \ T = C^a; \ \tau = \hat{t}(S,X)^z \\
-c \leftarrow H_0(R \parallel S \parallel T \parallel \tau \parallel J \parallel K \parallel L \parallel n_T \parallel \text{msgb}) \\
-s \leftarrow z + c \cdot f \mod q \\
-\sigma \leftarrow (R,S,T,J,K,c,s,n_T) \\
-\text{Output: } \sigma \\
-\hline
-\end{array}
-$$
-\caption{The Sign Algorithm}
-\label{fig:sign}
-\end{figure}
+The computation of $\tau$ gives a proof of knowledge of the credentials of the signer. This is based on the \textit{Schnorr Signature Scheme} detailed in section \ref{sec:schnorr}.
 
-\begin{figure}[H]
-$$\begin{array}{l}
-\text{Verifier}(\mathfrak{v}) \\
-\hline
-\text{Input: \textbf{ipk}}_k = (X,Y); \ \text{msg} = (\text{msgt}, \text{msgb}) \\
-\sigma = (R,S,T,J,K,c,s,n_T) \\
-\text{If } K = J^{f_i}, \text{ for any } f_i \text{in the set of rogue secret keys, or} \\
-\qquad \hat{t}(R,Y) \neq \hat{t}(S,g_2), \text{ or} \\
-\qquad J \neq H_1(\text{msgt}) \text{ return \textbf{reject}} \\
-\rho_a^\dagger = \hat{t}(R,X); \rho_b^\dagger = \hat{t}(S,X); \rho_c^\dagger = \hat{t}(T,g_2) \\
-\tau^\dagger = (\rho_b^\dagger)^s \cdot (\rho_c^\dagger / \rho_a^\dagger)^{-c} \\
-L^\dagger = J^s \cdot K^{-c} \\
-\text{If } c \neq H_0 (R \con S \con T \con \tau^\dagger \con J \con K \con L^\dagger \con n_T \con \text{msgb}) \text{ return \textbf{reject}} \\
-\text{Otherwise return \textbf{accept}} \\
-\hline
-\end{array}
-$$
-\caption{The Verify Algorithm}
-\label{fig:verify}
-\end{figure}
+%\begin{figure}[H]
+%$$\begin{array}{l}
+%\text{Signer}(\mathfrak{s}) \\
+%\hline
+%\text{Input: } f \in \ZZ_q; \ n_T \leftarrow \{0,1\}^\ast; \ msg \\
+%a \in_R \ZZ_q; \ z \in_R \ZZ_q \\
+%J \leftarrow H_1(\text{msgt}); \ K = J^f; \ L = J^z \\
+%R = A^a; \ S = B^a; \ T = C^a; \ \tau = \hat{t}(S,X)^z \\
+%c \leftarrow H_0(R \parallel S \parallel T \parallel \tau \parallel J \parallel K \parallel L \parallel n_T \parallel \text{msgb}) \\
+%s \leftarrow z + c \cdot f \mod q \\
+%\sigma \leftarrow (R,S,T,J,K,c,s,n_T) \\
+%\text{Output: } \sigma \\
+%\hline
+%\end{array}
+%$$
+%\caption{The Sign Algorithm}
+%\label{fig:sign}
+%\end{figure}
 
-In the Sign Algorithm (Fig. \ref{fig:sign}), the computation of $L$, $c$ and $s$ is for the non-interactive Zero-knowledge proof of knowledge of $f$, and $\tau$ is to proof the knowledge of the issuer's credentials. This is based on the \textit{Schnorr protocol} described in \cite{Schnorr90}
+\subsubsection*{Verifying Algorithm}
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item Let $\sigma = (R,S,T,K,L,c,s)$ be a signature on a message $m$ computed by a signer $\s$.
 
-To see if two signatures with same message title were signed by the same signer, only have to check whether $J_0 = J_1$ and $K_0 = K_1$.
+\item The verifier $\v$ checks if $J = H_1(m)$ and $\hat{t}(R,Y) = \hat{t}(S,g_2)$ hold. If not, the signature is not valid.
 
-In the case of using this scheme in a polling system, \textbf{msgt} could be used to identify the poll and \textbf{msgb} for the poll choice.
+\item $\v$ computes $\tau ' =  \hat{t}(R,X)^c \hat{t}(S,X)^s \hat{t}(T,g_2)^{-c}$ and $L' = H_1(m)^s \cdot K^{-c}$.
+
+\item The signature is valid only if $c = H_0(R \con S \con T \con \tau' \con K \con L' \con m)$
+
+\end{itemize}
+
+
+%\begin{figure}[H]
+%$$\begin{array}{l}
+%\text{Verifier}(\mathfrak{v}) \\
+%\hline
+%\text{Input: \textbf{ipk}}_k = (X,Y); \ \text{msg} = (\text{msgt}, \text{msgb}) \\
+%\sigma = (R,S,T,J,K,c,s,n_T) \\
+%\text{If } K = J^{f_i}, \text{ for any } f_i \text{in the set of rogue secret keys, or} \\
+%\qquad \hat{t}(R,Y) \neq \hat{t}(S,g_2), \text{ or} \\
+%\qquad J \neq H_1(\text{msgt}) \text{ return \textbf{reject}} \\
+%\rho_a^\dagger = \hat{t}(R,X); \rho_b^\dagger = \hat{t}(S,X); \rho_c^\dagger = \hat{t}(T,g_2) \\
+%\tau^\dagger = (\rho_b^\dagger)^s \cdot (\rho_c^\dagger / \rho_a^\dagger)^{-c} \\
+%L^\dagger = J^s \cdot K^{-c} \\
+%\text{If } c \neq H_0 (R \con S \con T \con \tau^\dagger \con J \con K \con L^\dagger \con n_T \con \text{msgb}) \text{ return \textbf{reject}} \\
+%\text{Otherwise return \textbf{accept}} \\
+%\hline
+%\end{array}
+%$$
+%\caption{The Verify Algorithm}
+%\label{fig:verify}
+%\end{figure}
+
+\subsubsection*{Threshold Checking Algorithm}
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item When a verifier $\v$ receives a signature $(\sigma, m)$, checks that the signature is valid, and then checks the signature against the list of $\ell$ valid signatures $(\sigma_i,m)$ on the message $m$ already received to ensure it is not a duplicate message signed by some verifier. To do it, just check $K \neq K_i$ for $i \in \{1, ..., \ell \}$.
+
+\item If it is not a duplicate, then $\v$ adds $(\sigma, m)$ to the list of valid signatures.
+
+\item When $\ell = t$, the threshold signature is set to be the collection $\{(\sigma_i)\}_{i\in \{1,...,t\}}$ of $t$ valid signatures on $m$ computed by $t$ distinct signers.
+
+
+\end{itemize}
 
 \section{Anonymous interactive protocol}
 
