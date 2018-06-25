@@ -14,7 +14,7 @@ For any pair $(sk,pk)$ of secret and public keys, and any plaintext $m$, it must
 
 A PKE scheme $(KG,\E,\G)$ has an homomorphic property if there exist two operations, defined on the set of plaintexts and ciphertexts, respectively, such that the result of operating two ciphertexts is an encryption of the result of operating the two corresponding plaintexts.
 
-Formally written: let $\M$ be the set of plaintexts and let $\bullet$ be an operation on $\M$ s.t. $m_1 \bullet m_2 \in \M \quad \forall m_1,m_2 \in \M$. Let $\C$ the set of ciphertexts and let $\circ$ be an operation on $\C$ s.t. $c_1 \bullet c_2 \in \C \quad \forall c_1,c_2 \in \C$. $(KG,\E,\D)$ is an homomorphic PKE if
+Formally written: let $\M$ be the set of plaintexts and let $\bullet$ be an operation on $\M$ s.t. $m_1 \bullet m_2 \in \M \quad \forall m_1,m_2 \in \M$. Let $\C$ the set of ciphertexts and let $\circ$ be an operation on $\C$ s.t. $c_1 \circ c_2 \in \C \quad \forall c_1,c_2 \in \C$. $(KG,\E,\D)$ is an homomorphic PKE if
 $$
 \D_{sk} \big( \E_{pk}(m_1) \circ \E_{pk}(m_2) \big) \ = \ m_1 \bullet m_2 \quad \forall m_1,m_2 \in \M.
 $$
@@ -111,7 +111,7 @@ $$\D_{sk}(\E_{pk}(P(\alpha))) = P(\alpha) $$
 \end{itemize}
 
 \section{Bilinear pairings}
-\cite{DiHe76}
+\nocite{DiHe76}
 
 Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Let $g_1$ be a fixed generator of $G_1$ and $g_2$ be a fixed generator of $G_2$.
 
@@ -137,11 +137,7 @@ Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Le
 
 \section{Secret Sharing}
 \subsection{Definitions}
-Definition of access structures and secret sharing
-
-\cite{Phillips1992}
-\cite{BlSt97}
-
+\nocite{Phillips1992} \nocite{BlSt97}
 \defn An access structure $\Gamma$ is the set of all subsets of $\PP$ that can recover the secret.
 
 \defn Let $\PP := \{ P_1, \dots, P_n \}$ be a set of participants. A \textit{monotone access structure} $\Gamma$ on $\PP$ is a subset $\Gamma \subseteq 2^{\PP}$, which is monotone increasing $$ A \in \Gamma, \quad A \subseteq A' \subseteq \PP \Rightarrow A' \in \Gamma $$
@@ -193,7 +189,7 @@ $$ s = q(0) \leftarrow \sum_{j=1}^t y_{i_j} \prod_{\substack{k \in [t] \setminus
 \end{itemize}
 
 \subsection{Anonymous secret sharing}
-An anonymous secret sharing scheme the secret can be reconstructed without the knowledge of which participants hold which shares.
+In an anonymous secret sharing scheme the secret can be reconstructed without the knowledge of which participants hold which shares. Examples of such anonymous sharing schemes can be found in \cite{BlSt97}.
 
 \section{Digital Signatures}
 To ensure integrity of data in communications and authentication, the concept of digital signatures appeared. 

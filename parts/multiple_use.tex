@@ -1,8 +1,6 @@
 \chapter{Multiple use: Anonymity with Non-linkability}
 \label{chap:mult}
-To achieve full anonymity we need some 
-Multiple use 
-
+Here we describe three solutions for anonymous threshold signature schemes with non-linkability property.
 
 \section{Constant size anonymous threshold signature}
 \citeauthor*{DazaDSV09} proposed in \cite{DazaDSV09} an anonymous threshold signature scheme that sets a $(t,r)$-threshold signature scheme based on Shamir's secret sharing over a partition of the set $\PP$ of participants.
@@ -241,9 +239,9 @@ The computation of $\tau$ gives a proof of knowledge of the credentials of the s
 
 We propose an interactive protocol based on the signature scheme described in section \ref{sec:shamir_sig}. Recall that this scheme does not have the \textit{unlinkability} property because it uses "pseudonyms" and they are shared to compute the signature. Thus, the idea of this new protocol is to hide these "pseudonyms".
 
-As in the \textbf{¿previous?} scheme, a participant $P_i$ from a subset $P \subset \PP$ of $t$ participants will compute a partial signature $\sigma_i (m)$ on a message $m$. The partial signature will be $\sigma_i (m) = H(m)^{s_i \prod_{P_j \in (P \setminus P_i)} \frac{-\alpha_j}{\alpha_i - \alpha_j}}$.
+As in the BLS signature scheme, a participant $P_i$ from a subset $P \subset \PP$ of $t$ participants will compute a partial signature $\sigma_i (m)$ on a message $m$. The partial signature will be $\sigma_i (m) = H(m)^{s_i \prod_{P_j \in (P \setminus P_i)} \frac{-\alpha_j}{\alpha_i - \alpha_j}}$.
 
-The goal of this modification is to compute $a^\frac{-\alpha_j}{\alpha_i - \alpha_j}$ without sharing the values of $\alpha_i$ and $\alpha_j$, for $1 \neq a \in G$ and a given $P_j \in P$. \sout{The protocol needs $t^2$ interactions as the one described in figure \ref{fig:proposed_protocol} to be able to compute the whole signature.}
+The goal of this modification is to compute $a^\frac{-\alpha_j}{\alpha_i - \alpha_j}$ without sharing the values of $\alpha_i$ and $\alpha_j$, for $1 \neq a \in G$ and a given $P_j \in P$.
 
 To compute $a^\frac{-\alpha_j}{\alpha_i - \alpha_j}$ we need participants $P_i,P_j$ and a third party $P_s$ that could be any other participant or a reliable party (like secure hardware).
 
@@ -251,13 +249,14 @@ To compute $a^\frac{-\alpha_j}{\alpha_i - \alpha_j}$ we need participants $P_i,P
 \subsubsection*{Interaction}
 Let $a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}} \leftarrow \mathcal{B}(a,P_i,P_j)$ the protocol that outputs $a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}$ given $1 \neq a \in G$, a first participant $P_i$ and a second participant $P_j$.
 
-This protocol is split in five steps. The description follows:
+This protocol is split in five steps. In the figures, the arrows between participants represent communication through a secure channel. The $BC$ block represents a broadcast channel, so anything sent to $BC$ is broadcasted to the rest. 
 
-\textbf{First step:} $P_i$ chooses $x_i, x_j, x_s \in \ZZ^*_p$ three random values and shares them with $P_j$ and $P_s$. These will be the new "pseudonyms".
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item[\textbf{First step:}] $P_i$ chooses $x_i, x_j, x_s \in \ZZ^*_p$ three random values and shares them with $P_j$ and $P_s$. These will be the new "pseudonyms".
 
 $P_i$ and $P_j$ randomly choose polynomials $f_i, g_i, z_i$ and $f_j, g_j, z_j$, respectively, where: $f_i,f_j$ and $g_i,g_j$ are linear, $g_i(0) = \alpha_i$ and $g_j(0) = \alpha_j$, and $z_i,z_j$ are quadratic polynomials with $z_i(0) = z_j(0) = 0$.
 
-\begin{figure}
+\begin{figure}[H]
         \begin{center}
         \begin{tikzpicture}
             
@@ -270,20 +269,22 @@ $P_i$ and $P_j$ randomly choose polynomials $f_i, g_i, z_i$ and $f_j, g_j, z_j$,
             \node[vertex] (Ps) at (2,2.6) {$P_s$};
             \node[vertex] (BC) at (2,1) {BC};
             
-            \node[calc, left = of Pi] (i) {
+            \node[calc] (i) at (-3,-1.5){
                 \begin{tabular}{c}
                     $x_i,x_j,x_s \in_R \ZZ_p^{\ast}$ \\
-                    $\gamma_{i,0}, \gamma_{i,1}, \gamma_{i,2} \in_R \ZZ_p$ \\
+                    $\gamma_{i,0}, \gamma_{i,1}, \gamma_{i,2}, \gamma_{i,3}, \gamma_{i,4} \in_R \ZZ_p$ \\
                     $g_i(x) \leftarrow \gamma_{i,1} \cdot x + \gamma_{i,0}$ \\
-                    $f_i(x) \leftarrow \gamma_{i,2} \cdot x + \alpha_i$
+                    $f_i(x) \leftarrow \gamma_{i,2} \cdot x + \alpha_i$ \\
+                    $z_i(x) \leftarrow \gamma_{i,4} \cdot x + \gamma_{i,3}$
                 \end{tabular}
             };
             
-            \node[calc, right = of Pj] (j) {
+            \node[calc] (j) at (7,-1.5){
                 \begin{tabular}{c}
-                    $\gamma_{j,0}, \gamma_{j,1}, \gamma_{j,2} \in_R \ZZ_p$ \\
+                    $\gamma_{j,0}, \gamma_{j,1}, \gamma_{j,2}, \gamma_{j,3} , \gamma_{j,4} \in_R \ZZ_p$ \\
                     $g_j(x) \leftarrow \gamma_{j,1} \cdot x + \gamma_{j,0}$ \\
-                    $f_j(x) \leftarrow \gamma_{j,2} \cdot x + \alpha_j$
+                    $f_j(x) \leftarrow \gamma_{j,2} \cdot x + \alpha_j$ \\
+                    $z_j(x) \leftarrow \gamma_{j,4} \cdot x + \gamma_{j,3}$
                 \end{tabular}
             };
             
@@ -296,11 +297,11 @@ $P_i$ and $P_j$ randomly choose polynomials $f_i, g_i, z_i$ and $f_j, g_j, z_j$,
 \caption{Step 1}
 \end{figure}
 
-\textbf{Second step:} Let $h(x) = (g_i(x) + g_j(x))(f_i(x) - f_j(x)) + z_i(x) + z_j(x)$. Note that $h(0) = v \cdot (\alpha_i - \alpha_j)$ for $v := g_i(0) + g_j(0)$.
+\item[\textbf{Second step:}] Let $h(x) = (g_i(x) + g_j(x))(f_i(x) - f_j(x)) + z_i(x) + z_j(x)$. Note that $h(0) = v \cdot (\alpha_i - \alpha_j)$ for $v := g_i(0) + g_j(0)$.
 
 $P_i$ and $P_j$ share with the rest the evaluations of the random polynomials s.t. $P_i,P_j,P_s$ can compute the evaluations $h(x_i),h(x_j),h(x_s)$ respectively.
 
-\begin{figure}
+\begin{figure}[H]
         \begin{center}
         \begin{tikzpicture}
             
@@ -342,9 +343,9 @@ $P_i$ and $P_j$ share with the rest the evaluations of the random polynomials s.
 \caption{Step 2}
 \end{figure}
 
-\textbf{Third step:} $P_i$,$P_j$,$P_s$ compute the evaluation of $h$ and share it with the rest. $P_i$ and $P_j$ interpolate the value $h(0)$.
+\item[\textbf{Third step:}] $P_i$,$P_j$,$P_s$ compute the evaluation of $h$ and share it with the rest. $P_i$ and $P_j$ interpolate the value $h(0)$.
 
-\begin{figure}
+\begin{figure}[H]
         \begin{center}
         \begin{tikzpicture}[node distance=0.5cm]
             
@@ -387,11 +388,11 @@ $P_i$ and $P_j$ share with the rest the evaluations of the random polynomials s.
 \caption{Step 3}
 \end{figure}
 
-\textbf{Fourth step:} $P_i$,$P_j$ compute $A_i=a^{\frac{1}{h(0)}(g_i(x_i)+g_j(x_i))}$, $A_j=a^{\frac{1}{h(0)}(g_i(x_j)+g_j(x_j))}$ respectively. $P_j$ shares $A_j$ with $P_i$.
+\item[\textbf{Fourth step:}] $P_i$,$P_j$ compute $A_i=a^{\frac{1}{h(0)}(g_i(x_i)+g_j(x_i))}$, $A_j=a^{\frac{1}{h(0)}(g_i(x_j)+g_j(x_j))}$ respectively. $P_j$ shares $A_j$ with $P_i$.
 
 $P_j$ can interpolate the exponents of $A_i$ and $A_j$ and compute $a^{\frac{g_i(0)+g_j(0)}{h(0)}} = a^{\frac{v}{v(\alpha_i - \alpha_j)}} = a^{\frac{1}{\alpha_i-\alpha_j}}$.
 
-\begin{figure}
+\begin{figure}[H]
         \begin{center}
         \begin{tikzpicture}[node distance=0.5cm]
             
@@ -423,9 +424,9 @@ $P_j$ can interpolate the exponents of $A_i$ and $A_j$ and compute $a^{\frac{g_i
 \caption{Step 4}
 \end{figure}
 
-\textbf{Fifth step:} $P_j$ computes $B^{-\alpha_j} = a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}$ and shares it with $P_i$. 
+\item[\textbf{Fifth step:}] $P_j$ computes $B^{-\alpha_j} = a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}$ and shares it with $P_i$. 
 
-\begin{figure}
+\begin{figure}[H]
         \begin{center}
         \begin{tikzpicture}[node distance=0.5cm]
             
@@ -455,15 +456,11 @@ $P_j$ can interpolate the exponents of $A_i$ and $A_j$ and compute $a^{\frac{g_i
         \end{center}
 \caption{Step 5}
 \end{figure}
-
+\end{itemize}
 \subsubsection*{Partial signature}
 Let $P = \{P_i, P_{j_1}, \dots , P_{j_{t-1}} \}$.
 
 For $P_i$ to compute the partial signature over a message $m$, computes $\sigma_i(m) = a_{t-1}$ where $a_k \leftarrow \mathcal{B}(a_{k-1},P_i,P_{j_k})$ for $k \in \{1, ... , t-1 \}$ and $a_0 = H(m)^{s_i}$
-
-\subsubsection*{Signature}
-The signature $\sigma(m)$ on a message $m$ from a group of $t$ participants $P = \{P_1, ... , P_t \}$ is
-$$\sigma(m) = \prod_{i=1}^m \sigma_i(m)$$.
 
 $$
 \sigma_i (m)
@@ -473,6 +470,15 @@ $$
 = H(m)^{ s_i \frac{- \alpha_{j_{1}}}{\alpha_{i} - \alpha_{j_{1}}} \cdots \frac{- \alpha_{j_{t-1}}}{\alpha_{i} - \alpha_{j_{t-1}}}}
 $$
 
+\subsubsection*{Signature}
+The signature $\sigma(m)$ on a message $m$ from a group of $t$ participants $P = \{P_1, ... , P_t \}$ is
+$$\sigma(m) = \prod_{i=1}^m \sigma_i(m)$$
+
 \subsection{Analysis}
-\subsubsection*{Correctness}
-\textbf{Interaction:}
+\subsubsection*{Unlinkability}
+The scheme keeps the unlinkability property while all participants remain honest but curious. Consider an interaction step with participants $P_i,P_j,P_s$. If an adversary $\mathcal{A}$ corrupts $P_j$ and $P_s$, $\mathcal{A}$ knows $f_i(x_j)$ and $f_i(x_s)$, being able to interpolate $f_i$ to obtain $\alpha_i = f_i(0)$.
+
+If we want the scheme to be still unlinkable after corrupting $\ell$ participants, we can extend the protocol in an analogous way where $f_k$ and $g_k$ are polynomials of degree $\ell$ and each interaction step needs $2 \ell + 1$ participants ($P_i,P_j$ and $2 \ell - 1$ other parties $P_{s_k}$.
+
+\subsubsection*{Computational Cost}
+For a participant $P_i$ to compute $\sigma_i$, $t-1$ interactions with different participants are needed. Then, to compute a valid signature, $t(t-1)$ interactions. We can consider this computationally expensive for large $t$.

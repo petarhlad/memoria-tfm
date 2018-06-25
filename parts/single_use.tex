@@ -1,9 +1,23 @@
 \chapter{Single use: Anonymity}
 \label{chap:single}
-We can easily achieve anonimity using "pseudonyms", but usually there is a dealer which is the trusted party. So, the security relies on a single party.
+In this chapter we consider threshold signature schemes that with non-traceability but with linkability.
 
-The idea:
+As we commented previously, we can avoid the linkability of a threshold signature scheme by setting it up newly every time a signature is computed. We describe two examples.
 
-Let there be a votation with $l$ choices $Z ={z_1, \dots, z_l}$. The candidate $z_i$ needs at least $t$ votes to be validated.
+\section{Anonymous Secret Sharing Scheme}
+Consider a signature scheme with secret $sk$. Using the $(t,n)$-anonymous threshold secret sharing scheme described in \cite{BlSt97} we can share the secret $sk$ among the participants through a secure channel. When a set of $t$ participants want to sign a message, they can just recover the secret $sk$ and compute a signature with it.
 
-The system chooses a random polynomial $q_i(x) = a_{0,i} + a_{1,i} x + \cdots + a_{k-1 , i}  x ^{k-1}$ of degree $k-1$ for each candidate, where $a_{0,i} = SK_i$ is the secret that validates each candidate.
+After that, the signature scheme is newly setup by choosing a different secret $sk$ and sharing it again using an anonymous threshold secret sharing scheme.
+
+In this solution, the dealer (the one who gives the shares to the participants) can know which participant holds which share because the participants have to authenticate themselves to avoid a single participant getting multiple shares. We can approach this by running a $1$-out-of-$N$ OT protocol randomly choosing a share for sufficiently large $N \gg n$ s.t. the probability of two participants choosing the same share is sufficiently low. In this way, the dealer does not know which participants holds which share, but the execution of an OT protocol for large $N$ is computationaly way too expensive.
+
+\section{Threshold BLS signature}
+Using the BLS threshold signature scheme described in \ref{sec:shamir_sig} we can avoid linkability setting up a new secret after a signature is computed.
+
+After the signature scheme is set up with a new secret $sk$ and a new random polynomial $P(x)$, a participant $P_i$ chooses $\alpha_i \in_R \ZZ_p$ and learns $P(\alpha_i)$ running an oblivious polynomial evaluation protocol. In this way, the dealer does not learn the value of $\alpha_i$.
+
+Since the participant actually does not need explicitly the value of $P(\alpha_i)$ but $H(m)^{P(\alpha_i)}$ to compute the partial signature on $m$, the participant can send the exponentiation of the powers of $\alpha_i$ to the dealer ($H(m)^{\alpha_i^j}$ for $j \in \{0, ..., t-1 \}$) and the dealer returns them exponentiated to the coefficients of the polynomial ($\left(H(m)^{\alpha_i^j}\right)^{a_j}$ for $j \in \{0, ..., t-1 \}$).
+
+In this way, the participant can compute: $$H(m)^{P(\alpha_i)} = \prod_{0\leq j \leq t-1} \left(H(m)^{\alpha_i^j}\right)^{a_j} = H(m)^{\sum_{0\leq j \leq t-1} a_j \alpha_i^j}$$
+
+The issue with this last method is that the participant has to wait the message to be chosen and then start communicating with the dealer. This could happen to many participants at the same time which may result in an overload for the dealer.
