@@ -1,28 +1,38 @@
 \chapter{Preliminaries}
-
-Some cryptographic preliminaries and other definitions.
+\label{chap:pre}
+Here we introduce some basic notions of cryptography and other fields that we will need to understand the schemes described in the subsequent chapters.
 
 \section{Homomorphic Public Key Encryption}
-Let ¿? be a public key cryptosystem with encryption algorithm (function?) $\mathcal{E}$ and decryption algorithm (function?) $\mathcal{D}$ where:
-$m' \leftarrow \mathcal{E}_{pk} (m)$ and $m \leftarrow \mathcal{D}_{sk} (m')$
+A public key encryption scheme $PKE = (KG, \E, \D)$ consists of three probabilistic and polynomial time algorithms:
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item The key generation algorithm $KG$ generates a pair $(sk,pk)$ of secret and public keys on the input of a security parameter
+\item The encryption algorithm $\E$ takes as input a plaintext $m$ and a public key $pk$, and outputs a ciphertext $c = \E_{pk}(m)$.
+\item The decryption algorithm $\D$ takes as input a ciphertext $c$ and a secret key and outputs a plaintext $m = \D_{sk}(c)$
+\end{itemize}
 
-Let $(G,\bullet)$ and $(H,\circ)$ be two groups such that $\mathcal{E}_{pk}: G \rightarrow H$.
+For any pair $(sk,pk)$ of secret and public keys, and any plaintext $m$, it must hold $m = \D_{sk} \left( \E_{pk} (m) \right)$.
 
-Then, ¿? is a Homomorphic Public Key Encryption Scheme if
-$$ \mathcal{E}_{sk} (m_1 \bullet m_2) \leftarrow \mathcal{E}_{sk} (m_1) \circ \mathcal{E}_{sk} (m_2)$$
+A PKE scheme $(KG,\E,\G)$ has an homomorphic property if there exist two operations, defined on the set of plaintexts and ciphertexts, respectively, such that the result of operating two ciphertexts is an encryption of the result of operating the two corresponding plaintexts.
 
-Example:
-\textbf{ElGamal}
+Formally written: let $\M$ be the set of plaintexts and let $\bullet$ be an operation on $\M$ s.t. $m_1 \bullet m_2 \in \M \quad \forall m_1,m_2 \in \M$. Let $\C$ the set of ciphertexts and let $\circ$ be an operation on $\C$ s.t. $c_1 \bullet c_2 \in \C \quad \forall c_1,c_2 \in \C$. $(KG,\E,\D)$ is an homomorphic PKE if
+$$
+\D_{sk} \big( \E_{pk}(m_1) \circ \E_{pk}(m_2) \big) \ = \ m_1 \bullet m_2 \quad \forall m_1,m_2 \in \M.
+$$
 
+Write $\M$ additively and $\C$ multiplicatively. For $a \in \ZZ^+$, we have $$\D_{sk} \left( \E_{pk} (m)^a \right) = a \cdot m$$
+
+An example of an homomorphic PKE was developed by \citeauthor{elGamal85} in \cite{elGamal85}.
 
 \section{Oblivious Polynomial Evaluation}
 Oblivious polynomial evaluation is a protocol involving two parties, a sender whose input is a polynomial $P \in \FF[x]$, and a receiver whose input is a value $\alpha \in \FF$. At the end of the protocol, the receiver learns $P(\alpha)$ and the sender learns nothing.
 
+Before explaining the first oblivious polynomial evaluation protocol we have to introduce the concept of oblivious transfer protocols.
+
+Oblivious Transfer (OT) protocols allow the sender to transmit part of its inputs to the receiver in a manner that: the sender does not receive more information than it is entitled, while the receiver is assured that the sender does not learn which part of the inputs it received. In a 1-out-of-$N$ OT protocol, the receiver can choose only one input of the sender between $N$ possible choices. \citeauthor{OT} desccribe in \cite{OT} an $n$-out-of-$N$ OT protocol where the receiver chooses $n$ inputs of the sender from $M$ possible choices.
+
 \subsection{Noisy Polynomial problem}
 
 \citeauthor{OPE} proposed in \cite{OPE} a protocol for Oblivious Polynomial Evaluation that relies on the hardness of the Noisy Polynomial Reconstruction problem.
-
-Generic Protocol:
 
 \begin{itemize}
     \item Input:
@@ -59,7 +69,7 @@ $$ Q(x,y) = P_x(x) + P(y) = \sum_{i=1}^{d} a_i x^i + \sum_{i=0}^{d_P} b_i y^i $$
 
 The receiver chooses a random polynomial $S$ of degree $k$, such that $S(0) = \alpha$.
 
-Define $R(x) = Q( x, S(x))$. The goal of the receiver is to use $R(x)$ to learn $P(\alpha)$. Note that $R(0) = Q(0,S(0)) = P(S(0)) = P(\alpha)$.
+Define $R(x) = Q( x, S(x))$. $R(x)$ is a polynomial of degree $d_R = d = k \cdot d_P$. The goal of the receiver is to use $R(x)$ to learn $P(\alpha)$. Note that $R(0) = Q(0,S(0)) = P(S(0)) = P(\alpha)$.
 
 \item[\textbf{3. The receiver learns points of R:}] The receiver learns $d_R + 1$ values of the form $\left\langle x_i , R(x_i) \right\rangle$.
 
@@ -86,21 +96,44 @@ The key is in the third step on how the receiver learns $d_R + 1$ evaluations of
 
 
 \subsection{Homomorphic PKE}
-Let $¿?$ be a Homomorphic Public Key Encryption Scheme with (¿possibly probabilistic?) encoding and decoding functions $\E: G \rightarrow H$ and $\D: H \rightarrow G$. Where $(G,\bullet)$ and $(H,\circ)$ are groups.
+Let $(KG,\E,\D)$ be a Homomorphic PKE Scheme.
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item The sender knows a polynomial $P(x) = \sum_{i=0}^d a_i x^i$ with $a_i \in \ZZ$ of degree $d$ which can be evaluated on $\M$ (i.e. we can define an additive operation and a multiplicative operation on $\M$). 
 
-We will write $G$ additively, and $H$ multiplicatively.
+\item Let $(sk,pk)$ be the secret and public key pair of the receiver. The receiver sends to the sender the powers of $\alpha$ encrypted: $\E_{pk}(\alpha^i)$ for $i \in \{0, ..., d\}$.
 
-The sender knows a polynomial $P(x) = \sum_{i=0}^d a_i x^i$ with $a_i \in \ZZ$ of degree $d$ which can be evaluated on the group $G$. 
+\item The sender uses the homomorphic property of the encryption scheme to compute the encryption of $P(\alpha)$: $$\E_{pk}(P(\alpha)) = \E_{pk}(a_0 + a_1 \alpha + ... + a_n \alpha^n) = \leftarrow \E_{pk}(\alpha^0)^{a_0} \cdot \E_{pk}(\alpha^1)^{a_1} \cdot ... \cdot \E_{pk}(\alpha^n)^{a_n}$$
+and sends it to the receiver.
 
-The receiver encrypts the powers of $\alpha$: $\beta_i \leftarrow \E(\alpha^i)$ for $i \in \{0, ..., d\}$ and sends them to the sender.
+\item The receiver decrypts the received value to get $P(\alpha)$:
+$$\D_{sk}(\E_{pk}(P(\alpha))) = P(\alpha) $$
 
-The sender uses the homomorphic property of the encryption scheme to compute $\beta = \E(P(\alpha)) \leftarrow \beta_0^{a_0} \cdot \beta_1^{a_1} \cdot ... \cdot \beta_n^{a_n}$ and sends it to the receiver.
+\end{itemize}
 
-The receiver decrypts the received value to get $P(\alpha)$:
-$\D(\beta) = \D(\E(P(\alpha))) = P(\alpha) $
+\section{Bilinear pairings}
+\cite{DiHe76}
 
+Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Let $g_1$ be a fixed generator of $G_1$ and $g_2$ be a fixed generator of $G_2$.
 
+\defn Computation Diffie-Hellman (CDH) Problem: Given a randomly chosen $g \in G_1$, $g^a$, and $g^b$ (for unknown randomly chosen $a,b \in \ZZ_q$), compute $g^{ab}$.
 
+\defn Decision Diffie-Hellman (DDH) Problem: Given randomly chosen $g \in G_1$, $g^a$, $g^b$, and $g^c$ (for unknown randomly chosen $a,b,c \in \ZZ_q$), decide whether $c = ab$. (If so, $(g, g^a, g^b, g^c)$ is called a valid Diffie-Hellman tuple.)
+
+\defn Computational co-Diffie-Hellman (co-CDH) Problem on $(G_1, G_2)$: Given $g_2, g^a_2 \in G_2$ and $h \in G_1$ as input, compute $h^a \in G_1$.
+
+\defn Decision co-Diffie-Hellman (co-DDH) on $(G_1, G_2)$: Given $g_2, g^a_2 \in G_2$ and $h, h^b \in G_1$ as input, decide whether $a=b$. If so, we say that $(g_2, g^a_2, h, h^a)$ is a co-Diffie-Hellman tuple.
+
+\defn Bilinear map: Let $G_T$ be an additional group such that $ |G_1| = |G_2| = |G_T| $. A bilinear map is a map $e: G_1 \times G_2 \rightarrow G_T$ with the following properties:
+\begin{enumerate}
+
+\item Bilinear: for all $u \in G_1, v \in G_2$ and $a,b \in \ZZ$, $e(u^a, v^b) = e(u,v)^{ab}$.
+\item Non-degenerate: $e(g_1, g_2) \neq 1$.
+
+\end{enumerate}
+
+\defn A Gap co-Diffie-Hellman (co-GDH) group pair is a pair of groups $(G_1, G_2)$ on which co-DDH is easy but co-CDH is hard. When $(G_1, G_1)$ is a co-GDH group pair, we say $G_1$ is a Gap group (GDH).
+
+\remk If there s a bilinear map on $G_1, G_2$, then they are a co-GDH group pair. If there is a bilinear map over $G_1 \times G_1$, then $G_1$ is a gap group, since one can use the bilinear map to solve the DDH problem.
 
 \section{Secret Sharing}
 \subsection{Definitions}
@@ -109,7 +142,7 @@ Definition of access structures and secret sharing
 \cite{Phillips1992}
 \cite{BlSt97}
 
-An access structure $\Gamma$ is the set of all subsets of $\PP$ that can recover the secret.
+\defn An access structure $\Gamma$ is the set of all subsets of $\PP$ that can recover the secret.
 
 \defn Let $\PP := \{ P_1, \dots, P_n \}$ be a set of participants. A \textit{monotone access structure} $\Gamma$ on $\PP$ is a subset $\Gamma \subseteq 2^{\PP}$, which is monotone increasing $$ A \in \Gamma, \quad A \subseteq A' \subseteq \PP \Rightarrow A' \in \Gamma $$
 
@@ -149,34 +182,21 @@ Let $\{p_{\KK} (\kk) \}_{\kk \in \KK}$ be a probability distribution on $\KK$, a
 %\thm \sout{Let $\acc$ be an access structure on a set of participants $\PP$. An ideal anonymous secret sharing scheme for $\acc$ exists if and only if either $\acc$ is a $(1,\vert \PP \vert)$ threshold structure, a $(\vert \PP \vert, \vert \PP \vert)$ threshold structure, or the closure of a complete bipartite graph.}
 
 \subsection{Shamir Secret Sharing}
-Shamir secret sharing described in \cite{Sham79}.
+A classic example of a secret sharing scheme is the one described by \citeauthor{Sham79} in \cite{Sham79} and it is based on polynomial interpolation. The goal of the scheme is to share a secret $s \in \ZZ_p$, for $p$ a large prime number, among $n$ parties s.t. any $t$ parties can recover the secret, and no $t-1$ can learn anything about the secret.
 
-The scheme is based on polynomial interpolation.
-
-Let $p$ be a large prime number. All operations are done in $\ZZ_p$
-
-We want to share a secret $s$ into $n$ shares so that the secret can be recovered with any $k$ distinct shares.
-
-Let $q(x) = a_0 + a_1 x + \cdots + a_{k-1} x^{k-1}$ be a random polynomial of degree $k-1$ in which $a_0 = s$.
-
-Each participant $i$ in $\PP = \{ 1, ... , n \}$ is given a different random number $x_i \in \ZZ_p$ which identifies the participant.
-Then, each participant $i$ is given the share $y_i = q(x_i)$.
-
-To recover the secret, we only need $k$ different shares. Let $P \subset \PP$ be any subset of $k$ participants. Then
-
-Let $\lambda_i^{P} = \prod_{P_j \in (P \setminus P_i)} \frac{-x_j}{x_i - x_j}$
-
-$$
-    q(x) = \sum_{i \in P} y_i \prod_{\substack{j \in P \\ i \neq j}} \frac{x-x_j}{x_i-x_j}
-$$
-
-Then, $s = q(0)$.
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item Let $s \in_R \ZZ_p$ be the secret we want to share among the set of participants $\PP = \{P_1, ... , P_n \}$.
+\item Let $P(x) = a_0 + a_1 x + \cdots + a_{t-1} x^{t-1}$ of degree $t-1$ with $a_1, ..., a_{t-1} \in_R \ZZ_p$, $a_{t-1} \neq 0$ and $a_0 = s$. Let $\alpha_1, ... , \alpha_n \in_R \ZZ_p$ all distinct.
+\item Each participant $P_i \in \PP$ is given the share $(\alpha_i, y_i)$ where $y_i = P(\alpha_i)$.
+\item If a set $\{P_{i_1},...,P_{i_t}\}$ of $t$ participants want to recover the secret, they share their shares and compute
+$$ s = q(0) \leftarrow \sum_{j=1}^t y_{i_j} \prod_{\substack{k \in [t] \setminus \{j\}}} \frac{-\alpha_{i_k}}{x_{i_j}-x_{i_k}}$$
+\end{itemize}
 
 \subsection{Anonymous secret sharing}
-
+An anonymous secret sharing scheme the secret can be reconstructed without the knowledge of which participants hold which shares.
 
 \section{Digital Signatures}
-To ensure integrity of data in communications and authentication, the concept of digital signatures was developed. 
+To ensure integrity of data in communications and authentication, the concept of digital signatures appeared. 
 
 A digital signature scheme consists of 3 algorithms:
 \begin{itemize}
@@ -188,8 +208,8 @@ A digital signature scheme consists of 3 algorithms:
 A signature scheme must satisfy the following properties:
 \begin{itemize}
     \item \textbf{Correctness}: A signature generated with the signing algorithm must always be accepted by the verifier.
-    \item \textbf{Unforgeability}: Only a user can sign messages on behalf of himself.
-    \item \textbf{Non-repudiation}: 
+    \item \textbf{Unforgeability}: An adversary who only knows the public key $pk$ cannot obtain valid signatures for this public key. That is, only the owner of the matching secret key $sk$ can properly sign with respect to $pk$.
+    %\item \textbf{Non-repudiation}: The author of a valid signature cannot later challenge the authenticity of the signature.
 \end{itemize}
 
 \subsection{Examples}
@@ -252,13 +272,13 @@ Some group signatures need what is called a Dealer, which will deal with the key
 
 Examples of Group signatures:
 
-\section{Threshold Digital Signatres}
-Definition and example (shamir)
+\section{Threshold Digital Signatures}
+A $(t,n)$-threshold signature scheme is a signature scheme in which any $t$ participants of the group $\PP = \{P_1, ..., P_n \}$ of participants is able to compute a signature on behalf of the group.
 
-\subsection{Shamir}
+\subsection{Boldyreva}
 \label{sec:shamir_sig}
 
-This signature scheme is based on the BLS scheme (see section \ref{sec:bls}).
+This signature scheme is based on the BLS scheme (see section \ref{sec:bls}) and was proposed by \citeauthor{Boldyreva03} in \cite{Boldyreva03}.
 
 \subsubsection*{Setup Algorithm}
 
@@ -271,7 +291,9 @@ This signature scheme is based on the BLS scheme (see section \ref{sec:bls}).
 
 \end{itemize}
 
-Note that, for any set $\{P_{i_1}, ... , P_{i_t} \} = P \subseteq \PP$ of $t$ participants: $$sk = P(0) = \sum_{j = 1}^t s_{i_j} \lambda_{i_j}^P$$ where $\lambda_{i_j}^P := \prod_{k \in [t] \setminus \{j\}} \frac{-\alpha_k}{\alpha_j - \alpha_k}$
+Note that, for any set $\{P_{i_1}, ... , P_{i_t} \} = P \subseteq \PP$ of $t$ participants: $$sk = P(0) = \sum_{j = 1}^t s_{i_j} \lambda_{i_j}^P$$
+
+where $\lambda_{i_j}^P := \prod_{k \in [t] \setminus \{j\}} \frac{-\alpha_k}{\alpha_j - \alpha_k}$
 
 \subsubsection*{Signing Algorithm}
 \begin{itemize}[align = left, leftmargin=*, label={--}]
@@ -286,28 +308,3 @@ Note that, for any set $\{P_{i_1}, ... , P_{i_t} \} = P \subseteq \PP$ of $t$ pa
 \item Let $e: G \times G \rightarrow G_t$ be a bilinear pairing. Let $\sigma$ be a signature on a message $m$.
 \item The signature $\sigma$ on $m$ is valid if and only if $e(\sigma, g) = e(H(m), pk)$
 \end{itemize}
-
-\section{Bilinear pairings}
-\cite{DiHe76}
-
-Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Let $g_1$ be a fixed generator of $G_1$ and $g_2$ be a fixed generator of $G_2$.
-
-\defn Computation Diffie-Hellman (CDH) Problem: Given a randomly chosen $g \in G_1$, $g^a$, and $g^b$ (for unknown randomly chosen $a,b \in \ZZ_q$), compute $g^{ab}$.
-
-\defn Decision Diffie-Hellman (DDH) Problem: Given randomly chosen $g \in G_1$, $g^a$, $g^b$, and $g^c$ (for unknown randomly chosen $a,b,c \in \ZZ_q$), decide whether $c = ab$. (If so, $(g, g^a, g^b, g^c)$ is called a valid Diffie-Hellman tuple.)
-
-\defn Computational co-Diffie-Hellman (co-CDH) Problem on $(G_1, G_2)$: Given $g_2, g^a_2 \in G_2$ and $h \in G_1$ as input, compute $h^a \in G_1$.
-
-\defn Decision co-Diffie-Hellman (co-DDH) on $(G_1, G_2)$: Given $g_2, g^a_2 \in G_2$ and $h, h^b \in G_1$ as input, decide whether $a=b$. If so, we say that $(g_2, g^a_2, h, h^a)$ is a co-Diffie-Hellman tuple.
-
-\defn Bilinear map: Let $G_T$ be an additional group such that $ |G_1| = |G_2| = |G_T| $. A bilinear map is a map $e: G_1 \times G_2 \rightarrow G_T$ with the following properties:
-\begin{enumerate}
-
-\item Bilinear: for all $u \in G_1, v \in G_2$ and $a,b \in \ZZ$, $e(u^a, v^b) = e(u,v)^{ab}$.
-\item Non-degenerate: $e(g_1, g_2) \neq 1$.
-
-\end{enumerate}
-
-\defn A Gap co-Diffie-Hellman (co-GDH) group pair is a pair of groups $(G_1, G_2)$ on which co-DDH is easy but co-CDH is hard. When $(G_1, G_1)$ is a co-GDH group pair, we say $G_1$ is a Gap group (GDH).
-
-\remk If there s a bilinear map on $G_1, G_2$, then they are a co-GDH group pair. If there is a bilinear map over $G_1 \times G_1$, then $G_1$ is a gap group, since one can use the bilinear map to solve the DDH problem.

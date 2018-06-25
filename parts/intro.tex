@@ -1,3 +1,40 @@
 \chapter{Introduction}
 
+There are many practical applications for threshold signature schemes.
+
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item[\textbf{Case 1:}] There is a toll system that gives a discount on the price if there are at least three passengers in the vehicle. The passengers prove that they are at least three by running a threshold signature with their personal devices (e.g. their smart-phones).
+
+\item[\textbf{Case 2:}] There is an e-voting system where each candidate needs a certain amount of signatures to get to the next round.  This can be done with a threshold signature from the voters on the candidate's identifier.
+
+\item[\textbf{Case 3:}] An advertising company pays to website holders for showing their ads. But they pay depending on the amount of distinct users that have seen (or clicked) the ad instead of the total amount of watches (or clicks). This can be done with a threshold signature from the users on the ad identifier.
+\end{itemize}
+
+We would want the schemes, in all three cases, to be anonymous. Also we would want them to be unlinkable for different messages. Otherwise, if the anonymity of a signer is compromised at some point, an attacker link all messages that the signer has signed. In case 1 this would result in the ability of tracking the geographic location of a signer, in case 2 the information of who has voted the signer, and in case 3 the information on which sites visits the signer.
+
+For case 1, we want the signatures to be compact and not excessively complex to compute, but the signing protocol could be interactive. For case 3, since the value of the threshold is large, we want the signature to be compact and the signing protocol should not be interactive.
+
+In this work, we attempt to find a threshold signature scheme such that signatures are anonymous, unlinkable, compact and that does not require interaction between the signers.
+
+In chapter \ref{chap:pre} we introduce the cryptographic notions necessary to understand and review the solutions we explain.
+
+In chapter \ref{chap:anon} we discuss the concept of anonymity in threshold signature schemes to clear it up, since many authors use the concept with different meanings.
+
+In chapter \ref{chap:single} we detail some solutions that are valid for only once because they do not have the non-traceability property, so the signature scheme needs to be setup newly every time a signature is computed.
+
+In chapter \ref{chap:mult} we detail three solutions that are anonymous and non-traceable:
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item The first gives a compact signature, but depending on the setup not every set of participants of same size as the threshold will be able to compute a signature.
+\item The second gives a signature which size grows linearly with the threshold.
+\item The third is an improvement we propose on the scheme detailed in \ref{sec:shamir_sig} that is compact and any set of participants of same size as the threshold is able to compute a signature. The counterpart is that the protocol is interactive and requires a number of interaction between the signers that grows with the square of the threshold.
+\end{itemize}
+
+In chapter \ref{chap:conc} we sum up the advantages and disadvantages that has every detailed solution and discuss the utility of each, and explain the conclusions of the work.
+
+
+
+
+
+
+
 Informal introduction on what is the problem we are approaching, what solutions we found, and what 'cons' have these solutions.
