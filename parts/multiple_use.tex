@@ -4,7 +4,7 @@ Multiple use
 
 
 \section{Constant size anonymous threshold signature}
-\citeauthor*{DazaDSV09} proposed in \cite{DazaDSV09} an anonymous threshold signature scheme that sets a $(t,n)$-threshold signature scheme based on Shamir's secret sharing over a partition of the set $\PP$ of participants.
+\citeauthor*{DazaDSV09} proposed in \cite{DazaDSV09} an anonymous threshold signature scheme that sets a $(t,r)$-threshold signature scheme based on Shamir's secret sharing over a partition of the set $\PP$ of participants.
 
 \subsection{Description}
 \subsubsection*{Setup Algorithm}
@@ -42,32 +42,15 @@ To see the relation between these parameters and the probability of success, we 
 Given $\{P_{i_1}, ... P_{i_t} \}$ a set of $t$ participants, they will succeed only if $\alpha^{(i)}_{i_1}, ..., \alpha^{(i)}_{i_t} $ are all distinct for a certain $i \in \{1, ...,d\}$. Hence, $t \leq r$.
 
 \subsubsection*{Random partitions}
-Suppose that for each participant $P_k \in \PP$ and for all $i \in \{1, ..., d\}$ the probability $Pr(P_k \in \PP^i_j) = \frac{1}{r}$.
+Suppose that for each participant $P_k \in \PP$ and for all $i \in \{1, ..., d\}$ the probability $Pr(P_k \in \PP^i_j) = \frac{1}{r}$ holds.
 
-\subsubsection*{Deterministic partitions}
+The probability that, given $t$ participants, they succeed on signing a message in the $i$-th threshold signature scheme (i.e. no two participants share the same public key) is given by $p_{succ,i} = \prod_{k=0}^{t-1} (1-\frac{i}{r}) = 1 - \frac{t(t-1)}{2r} + o\left( \frac{t^2}{r} \right)$
 
+Thus, the probability of failing to sign a message in the $i$-th threshold signature scheme is $p_{fail,i} = 1 - p_{succ,i} = \frac{t^2}{2r} + o\left( \frac{t^2}{r} \right)$.
 
-To simplify the analysis, for each participant $P_k \in \PP$ we will consider the corresponding codeword in a (not necessary linear) code of length $d$ over an alphabet of size $r$ given by:
-$$c_k := (j_1, ... , j_d) \text{ iff } P_k \in \PP^i_{j_i} \quad \forall i \in \{1, ..., d\}$$
+The global probability of failing to sign a message is $p_{fail} = \prod_{i=1}^d p_{fail,i} = {\left(\frac{t^2}{2r}\right)^d + o\left( \left( \frac{t^{2}}{r} \right)^d \right)}$
 
-
-\citeauthor{singleton} \cite{singleton}.
-
-This sets up a $(t,r)$-threshold signature scheme.
-
-When $t$ participants try to sign a message, there is a probability $p_{\text{fail}} = 1 - p_{\text{success}}$ that at least two participants belong to the same group. The probability that all $t$ participants belong to different groups is given by $p_{\text{success}} = \frac{\binom{r}{t} \left( \frac{n}{r} \right)^{t}}{\binom{n}{t}}$.
-
-Looks like, for large values, $p_{\text{fail}} \sim \frac{t^2}{2r}$
-
-In \cite{DazaDSV09} they extend this scheme in the following way: There are set $d$ different $(t,r)$-threshold signature scheme and every participant is given $d$ shares, one for each secret. The probability of not being able to sign a message is $\left(p_{\text{fail}} \right)^d$.
-
-To be anonymous, we need $n \geq 2r$.
-
-These schemes would be suitable for small values of $t$.
-
-Some values:
-
-
+\begin{table}[H]
 \begin{center}
     \begin{tabular}{|c|r|c|r|r|c|}
         \hline
@@ -79,28 +62,61 @@ Some values:
         & $100$ & & $5 \cdot 10^9$ & $5 \cdot 10^{6}$ & $0.99 \cdot 10^{-3}$ \\ \cline{2-2} \cline{4-6}
         
         \hline
+
     \end{tabular}
 \end{center}
+\caption{Sample values for $p_{fail,i}$}
+\end{table}
 
-\cite{Deng04}
 
-\section{Non-linear size anonymous threshold signature}
+\subsubsection*{Deterministic partitions}
+
+
+To simplify the analysis, for each participant $P_k \in \PP$ we will consider the corresponding codeword in a (not necessary linear) code of length $d$ over an alphabet of size $r$ given by:
+$$c_k := (j_1, ... , j_d) \text{ iff } P_k \in \PP^i_{j_i} \quad \forall i \in \{1, ..., d\}$$
+
+\begin{thm}[Singleton \cite{singleton}]
+Let $C$ be a code of length $n$, minimum distance $d$ over an alphabet of size $q$ and cardinality $M$. The cardinality is upper bounded by $\log_q M \leq n-d+1$.
+\end{thm}
+
+Changing the notation to adapt it to our case, if we want all codewords associated to the participants to be different, we have $log_r n \leq d - \delta + 1$ where $\delta$ would be the minimum distance of the code (i.e. the least number of schemes that any two participants have distinct public keys in them). For $\delta \geq 1$ we have $n \leq r^d$.
+
+It is reasonable to wonder whether it is possible or not to define $d$ partitions of $\PP$, such that any set of $t$ participants lie in diferent parts of a certain partition $\PP^i$. To answer that question, we need the following definition.
+
+\defn Let $m \geq w \geq 2$. An $(n,m,w)$-perfect hash family is a set of functions $\F$ where $\card{Y} = n$, $\card{X} = m$ and $f: Y \rightarrow X$ for each $f \in \F$, such that, for any $C \subseteq Y$ with $\card{C} = w$, there exists at least one function $f \in \F$ such that $f \vert_C$ is one-to-one. When $\card{\F} = N$, an $(n,m,w)$-perfect hash family will be denoted by \textbf{PHF}$(N;n,m,w)$.
+
+Getting back to our question: let $Y = \PP$, $X = \{1, ..., r\}$ and let $\F = \{f_1, ..., f_d\}$ where $f_i(P_k) = (c_k)_i$. It is possible to define $d$ partitions of $P$ in a way that any set of $t$ participants lie in diferent parts of a certain partition $P^i$ if and only if there exists a \textbf{PHF}$(d;n,r,t)$. PHF exist only for suitable sets of values for the parameters. The following theorem gives a (not tight) lower bound on $\card{\F}$ s.t. there exists a PHF.
+
+\begin{thm}[2.1 \cite{Deng04}]
+There exists a \textbf{PHF}$(d;n,r,t)$ if
+$$ d > \frac{\log \binom{n}{t}}{\log r^t - \log (r^t - t! \binom{r}{t})} $$
+\end{thm}
+
+Table with sample values.
+
+To be anonymous, we need $n \geq 2r$.
+
+These schemes would be suitable for small values of $t$.
+
+
+
+\section{Linkable Group Signature Scheme}
 \cite{ChenNW11}
 \subsection{Description}
 \subsubsection*{Setup Algorithm}
-
-Let $G_1$, $G_2$, $G_T$ be cyclic groups of sufficiently large prime order $q$. Two random generators $g_1 \in G_1$, $g_2 \in G_2$, and a bilinear pairing $\hat{t}: G_1 \times G_2 \rightarrow G_T$.
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item Let $G_1$, $G_2$, $G_T$ be cyclic groups of sufficiently large prime order $q$. Two random generators $g_1 \in G_1$, $g_2 \in G_2$, and a bilinear pairing $\hat{t}: G_1 \times G_2 \rightarrow G_T$.
 
 DDH problem in $G_1$, Gap-DL problem in $G_1$ and $G_2$ and the blind bilinear LRSW problem are hard.
 
-Let $H_0 : \{0,1\}^\ast \rightarrow \ZZ_q$ and $H_1 : \{ 0 , 1 \}^\ast \rightarrow G_1$ be two hash functions.
+\item Let $H_0 : \{0,1\}^\ast \rightarrow \ZZ_q$ and $H_1 : \{ 0 , 1 \}^\ast \rightarrow G_1$ be two hash functions.
 
-For each issuer $i \in \mathcal{I}$ the following is performed.
+\item For each issuer $i \in \mathcal{I}$ the following is performed.
 
 Two integers are selected $x,y \in_R \ZZ_q$ and the issuer secret key \textbf{isk} is assigned to be $(x,y)$. Then the values $X = g_2^{x} \in G_2$ and $Y = g_2^{y} \in G_2$ are computed. The issuer public key \textbf{ipk} is assigned to be $(X,Y)$.
 
-Finally the system public parameters $par$ are set to be $par = (G_1, G_2, G_T, \hat{t}, g_1, g_2, H_0, H_1, \text{ipk}_k)$ and are published.
-
+\item The system public parameters $par$ are set to be $par = (G_1, G_2, G_T, \hat{t}, g_1, g_2, H_0, H_1, \text{ipk}_k)$ and are published.
+\end{itemize}
 \subsubsection*{Join protocol}
 
 This is a protocol between a given signer $s \in S$  and an issuer $i \in \mathcal{I}$.
