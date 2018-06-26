@@ -20,12 +20,12 @@ A solution in this way for the e-voting case described in the introduction would
 \item At the end of the voting, if a candidate $C_i$ knows at least $t$ shares $(\alpha_{j,i},Q_i(\alpha_{j,i})$, he can interpolate $Q_i(x)$ to obtain the secret $sk_i = Q_i(0)$ and be validated.
 \end{itemize}
 
-\section{Threshold BLS signature}
+\section{Anonymized Threshold BLS Signatures}
 \label{sec:thr_bls}
 Using the BLS threshold signature scheme described in \ref{sec:shamir_sig} we can avoid linkability setting up a new secret after a signature is computed.
 
-After the signature scheme is set up with a new secret $sk$ and a new random polynomial $P(x)$, a participant $P_i$ chooses $\alpha_i \in_R \ZZ_p$ and learns $P(\alpha_i)$ running an oblivious polynomial evaluation protocol. In this way, the dealer does not learn the value of $\alpha_i$.
+After the signature scheme is set up with a new secret $sk$ and a new random polynomial $P(x)$, a participant $P_i$ chooses $\alpha_i \in_R \ZZ_p^\ast$ and learns $P(\alpha_i)$.
 
-One could think the following: since the participant actually does not need explicitly the value of $P(\alpha_i)$ but $H(m)^{P(\alpha_i)}$ to compute the partial signature on $m$, the participant can send the exponentiation of the powers of $\alpha_i$ to the dealer ($H(m)^{\alpha_i^j}$ for $j \in \{0, ..., t-1 \}$) and the dealer returns them exponentiated to the coefficients of the polynomial ($\left(H(m)^{\alpha_i^j}\right)^{a_j}$ for $j \in \{0, ..., t-1 \}$). In this way, the participant can compute: $$H(m)^{P(\alpha_i)} = \prod_{0\leq j \leq t-1} \left(H(m)^{\alpha_i^j}\right)^{a_j} = H(m)^{\sum_{0\leq j \leq t-1} a_j \alpha_i^j}$$.
+Recall that the threshold BLS signature scheme in section \ref{sec:shamir_sig} is not anonymous with respect to the dealer, who knows the $\alpha_i$ assigned to each participant $P_i$. A way to avoid this is to use an oblivious polynomial evaluation protocol (see section \ref{sec:ope}). In this way, $P_i$ obtains his secret share $P(\alpha_i)$ and the dealer obtains nothing on $\alpha_i$.
 
-The issue with this last method is that the dealer knows $H(m)^{P(\alpha_i)}$. Then, when the values $\alpha_i$ are published, the dealer can compute the $t^2$ possible partial signatures ${\sigma_{ij} = \left( H(m)^{P(\alpha_i)} \right)^{\lambda_j^P}}$. When the participants publish their partial signatures, the dealer can link them with the value  $H(m)^{P(\alpha_i)}$ and trace their identity.
+Given a set $\{P_1, ..., P_t\}$ of $t$ participants, there is a positive probability that two participants $P_i,P_j$ chose the same $\alpha_i = \alpha_j$, thus failing to perform a signature. If $\alpha_i$ are randomly chosen with uniform distribution among $\ZZ_p^\ast$, the probability that at least two participants hold the same share is $q = 1 - \prod_{k=1}^{t-1} (1-\frac{k}{p-1})$. Since $p \gg n$ and therefore $p \gg t$, we can approximate $q = \frac{t(t-1)}{2(p-1)} + o\left(\frac{t^2}{p}\right)$. If $p$ is a $1024$-bit prime (usual bit length for large primes in cryptography), and considering that there is no practical use for, lets say, $n > 2^{128}$ (the number of distinct IPv6 addresses) we can claim that $q < 2^{-769}$ in any practical case, which is absurdly small.

@@ -2,7 +2,7 @@
 \label{chap:mult}
 Here we describe three solutions for anonymous threshold signature schemes with non-linkability property.
 
-\section{Constant size anonymous threshold signature}
+\section{Constant Size Anonymous Threshold Signature}
 
 \citeauthor*{DazaDSV09} proposed in \cite{DazaDSV09} an anonymous threshold signature scheme that sets a $(t,r)$-threshold signature scheme based on Shamir's secret sharing over a partition of the set $\PP$ of participants.
 
@@ -82,11 +82,11 @@ Let $C$ be a code of length $n$, minimum distance $d$ over an alphabet of size $
 
 Changing the notation to adapt it to our case, if we want all codewords associated to the participants to be different, we have $log_r n \leq d - \delta + 1$ where $\delta$ would be the minimum distance of the code (i.e. the least number of schemes that any two participants have distinct public keys in them). For $\delta \geq 1$ we have $n \leq r^d$.
 
-It is reasonable to wonder whether it is possible or not to define $d$ partitions of $\PP$, such that any set of $t$ participants lie in diferent parts of a certain partition $\PP^i$. To answer that question, we need the following definition.
+It is reasonable to wonder whether it is possible or not to define $d$ partitions of $\PP$, such that any set of $t$ participants lie in different parts of a certain partition $\PP^i$. To answer that question, we need the following definition.
 
 \defn Let $m \geq w \geq 2$. An $(n,m,w)$-perfect hash family is a set of functions $\F$ where $\card{Y} = n$, $\card{X} = m$ and $f: Y \rightarrow X$ for each $f \in \F$, such that, for any $C \subseteq Y$ with $\card{C} = w$, there exists at least one function $f \in \F$ such that $f \vert_C$ is one-to-one. When $\card{\F} = N$, an $(n,m,w)$-perfect hash family will be denoted by \textbf{PHF}$(N;n,m,w)$.
 
-Getting back to our question: let $Y = \PP$, $X = \{1, ..., r\}$ and let $\F = \{f_1, ..., f_d\}$ where $f_i(P_k) = (c_k)_i$. It is possible to define $d$ partitions of $P$ in a way that any set of $t$ participants lie in diferent parts of a certain partition $P^i$ if and only if there exists a \textbf{PHF}$(d;n,r,t)$. PHF exist only for suitable sets of values for the parameters. The following theorem gives a (not tight) lower bound on $\card{\F}$ s.t. there exists a PHF.
+Getting back to our question: let $Y = \PP$, $X = \{1, ..., r\}$ and let $\F = \{f_1, ..., f_d\}$ where $f_i(P_k) = (c_k)_i$. It is possible to define $d$ partitions of $P$ in a way that any set of $t$ participants lie in different parts of a certain partition $P^i$ if and only if there exists a \textbf{PHF}$(d;n,r,t)$. PHF exist only for suitable sets of values for the parameters. The following theorem gives a (not tight) lower bound on $\card{\F}$ s.t. there exists a PHF.
 
 \begin{thm}[2.1 \cite{Deng04}]
 There exists a \textbf{PHF}$(d;n,r,t)$ if
@@ -238,7 +238,7 @@ The computation of $\tau$ gives a proof of knowledge of the credentials of the s
 
 \end{itemize}
 
-\section{Anonymous interactive protocol}
+\section{Anonymous Interactive Protocol}
 
 We propose an interactive protocol based on the signature scheme described in section \ref{sec:shamir_sig}. Recall that this scheme does not have the \textit{unlinkability} property because it uses "pseudonyms" and they are shared to compute the signature. Thus, the idea of this new protocol is to hide these "pseudonyms".
 
@@ -253,7 +253,7 @@ To compute $a^\frac{-\alpha_j}{\alpha_i - \alpha_j}$ we need participants $P_i,P
 \subsubsection*{Interaction}
 Let $a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}} \leftarrow \mathcal{B}(a,P_i,P_j)$ the protocol that outputs $a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}$ given $1 \neq a \in G$, a first participant $P_i$ and a second participant $P_j$.
 
-This protocol is split in five steps. In the figures, the arrows between participants represent communication through a secure channel. The $BC$ block represents a broadcast channel, so anything sent to $BC$ is broadcasted to the rest. 
+This protocol is split in five steps. In the figures, the arrows between participants represent communication through a secure channel. The $BC$ block represents a broadcast channel, so anything sent to $BC$ is broadcast to the rest. 
 
 \begin{itemize}[align = left, leftmargin=*, label={--}]
 \item[\textbf{First step:}] $P_i$ chooses $x_i, x_j, x_s \in \ZZ^*_p$ three random values and shares them with $P_j$ and $P_s$. These will be the new "pseudonyms".

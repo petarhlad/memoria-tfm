@@ -19,18 +19,19 @@ $$
 \D_{sk} \big( \E_{pk}(m_1) \circ \E_{pk}(m_2) \big) \ = \ m_1 \bullet m_2 \quad \forall m_1,m_2 \in \M.
 $$
 
-Write $\M$ additively and $\C$ multiplicatively. For $a \in \ZZ^+$, we have $$\D_{sk} \left( \E_{pk} (m)^a \right) = a \cdot m$$
+Write $\M$ additivelly and $\C$ multiplicativelly. For $a \in \ZZ^+$, we have $$\D_{sk} \left( \E_{pk} (m)^a \right) = a \cdot m$$
 
 An example of an homomorphic PKE was developed by \citeauthor{elGamal85} in \cite{elGamal85}.
 
 \section{Oblivious Polynomial Evaluation}
+\label{sec:ope}
 Oblivious polynomial evaluation is a protocol involving two parties, a sender whose input is a polynomial $P \in \FF[x]$, and a receiver whose input is a value $\alpha \in \FF$. At the end of the protocol, the receiver learns $P(\alpha)$ and the sender learns nothing.
 
 Before explaining the first oblivious polynomial evaluation protocol we have to introduce the concept of oblivious transfer protocols.
 
 Oblivious Transfer (OT) protocols allow the sender to transmit part of its inputs to the receiver in a manner that: the sender does not receive more information than it is entitled, while the receiver is assured that the sender does not learn which part of the inputs it received. In a 1-out-of-$N$ OT protocol (introduced in \cite{BrassardCR86} by \citeauthor{BrassardCR86}), the receiver can choose only one input of the sender between $N$ possible choices. \citeauthor{OT} desccribe in \cite{OT} an $n$-out-of-$N$ improved OT protocol where the receiver chooses $n$ inputs of the sender from $M$ possible choices.
 
-\subsection{Noisy Polynomial problem}
+\subsection{A Solution Based on Noisy Polynomials}
 
 \citeauthor{OPE} proposed in \cite{OPE} a protocol for Oblivious Polynomial Evaluation that relies on the hardness of the Noisy Polynomial Reconstruction problem.
 
@@ -95,7 +96,7 @@ The key is in the third step on how the receiver learns $d_R + 1$ evaluations of
 \end{itemize}
 
 
-\subsection{Homomorphic PKE}
+\subsection{A Solution Based on Homomorphic PKE}
 Let $(KG,\E,\D)$ be a Homomorphic PKE Scheme.
 \begin{itemize}[align = left, leftmargin=*, label={--}]
 \item The sender knows a polynomial $P(x) = \sum_{i=0}^d a_i x^i$ with $a_i \in \ZZ$ of degree $d$ which can be evaluated on $\M$ (i.e. we can define an additive operation and a multiplicative operation on $\M$). 
@@ -110,7 +111,7 @@ $$\D_{sk}(\E_{pk}(P(\alpha))) = P(\alpha) $$
 
 \end{itemize}
 
-\section{Bilinear pairings}
+\section{Bilinear Pairings}
 \nocite{DiHe76}
 
 Let $G_1$ and $G_2$ be two (multiplicative) cyclic groups of prime order $q$. Let $g_1$ be a fixed generator of $G_1$ and $g_2$ be a fixed generator of $G_2$.
@@ -188,7 +189,7 @@ A classic example of a secret sharing scheme is the one described by \citeauthor
 $$ s = q(0) \leftarrow \sum_{j=1}^t y_{i_j} \prod_{\substack{k \in [t] \setminus \{j\}}} \frac{-\alpha_{i_k}}{x_{i_j}-x_{i_k}}$$
 \end{itemize}
 
-\subsection{Anonymous secret sharing}
+\subsection{Anonymous Secret Sharing}
 In an anonymous secret sharing scheme the secret can be reconstructed without the knowledge of which participants hold which shares. Examples of such anonymous sharing schemes can be found in \cite{BlSt97}.
 
 \section{Digital Signatures}
@@ -261,7 +262,7 @@ The signature on $m$ is $\sigma = (c,s)$.
 \section{Group Signatures}
 A group signature scheme is a signature scheme that allows a member of a group to anonymously sign a message on behalf of the group.
 
-In a group signature scheme there is a group manager, who is in charge of adding group members.
+In a group signature scheme there is a group manager, who is in charge of adding members to the group, in a registration process where the group manager sends to the new member some private information.
 
 A group signature scheme, together with the requirements of a simple signature scheme, should have the following properties:
 \begin{itemize}[align = left, leftmargin=*]
@@ -280,12 +281,12 @@ Some schemes have the unlinkability property. Other schemes can have the linkabi
 We are interested in group signature schemes without traceability and with linkability only for signatures on the same message, and unlinkability for signatures on distinct messages. An example of such group signature scheme is detailed in section \ref{sec:chen}.
 
 \section{Threshold Digital Signatures}
-A $(t,n)$-threshold signature scheme is a signature scheme in which any $t$ participants of the group $\PP = \{P_1, ..., P_n \}$ of participants is able to compute a signature on behalf of the group.
+A $(t,n)$-threshold signature scheme is a signature scheme in which any $t$ participants of the group $\PP = \{P_1, ..., P_n \}$ of participants is able to compute a signature on behalf of the group. Any subset of less than $t$ participants must be unable to compute a valid signature.
 
-\subsection{Boldyreva}
+\subsection{An Example: Threshold BLS Signatures by Boldyreva}
 \label{sec:shamir_sig}
 
-This signature scheme is based on the BLS scheme (see section \ref{sec:bls}) and was proposed by \citeauthor{Boldyreva03} in \cite{Boldyreva03}.
+This threshold signature scheme is based on the BLS scheme (see section \ref{sec:bls}) and was proposed by \citeauthor{Boldyreva03} in \cite{Boldyreva03}.
 
 \subsubsection*{Setup Algorithm}
 
