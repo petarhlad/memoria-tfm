@@ -49,7 +49,7 @@ The probability that, given $t$ participants, they succeed on signing a message 
 
 Thus, the probability of failing to sign a message in the $i$-th threshold signature scheme is $p_{fail,i} = 1 - p_{succ,i} = \frac{t^2}{2r} + o\left( \frac{t^2}{r} \right)$.
 
-The global probability of failing to sign a message is $p_{fail} = \prod_{i=1}^d p_{fail,i} = {\left(\frac{t^2}{2r}\right)^d + o\left( \left( \frac{t^{2}}{r} \right)^d \right)}$
+The global probability of failing to sign a message is $$p_{fail} = \prod_{i=1}^d p_{fail,i} = {\left(\frac{t^2}{2r}\right)^d + o\left( \left( \frac{t^{2}}{r} \right)^d \right)}$$
 
 \begin{table}[H]
 \begin{center}
