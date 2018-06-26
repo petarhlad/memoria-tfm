@@ -1,14 +1,21 @@
 \chapter{Conclusions and future work}
 \label{chap:conc}
+In this chapter we sum up the advantages and disatvantages of the solutions discussed in chapters \ref{chap:single} and \ref{chap:mult}.
 
-Conclusions of the protocol described in section \ref{sec:daza}.
-The signature scheme, simulates a $(t,n)$-threshold signature scheme setting $d$ different $(t,r)$-threshold signature schemes.
-In the Daza scheme, not always a group of $t$ participants can compute a signature. For random partitions, the probability is somehow OK.
-For deterministic partitions, there are some values s.t. any set of $t$ participants can compute a signature, but the parameters grow large. $d$ is at least $t$ and it is not suitable for large values of $t$. The signature has the same length as the shares.
-$n/r$ measures the "unlinkability".
+The protocols described in \ref{chap:single} are anonymous and unlinkable, but they are not practical in many applications, since the whole system has to be set up again after a signature is computed.
 
-Conclusions of the protocol described in section \ref{sec:chen} 
-Sets an anonymous $(t,n)$-threshold signature scheme where any set of $t$ participants can compute a signature. Where the signatures are linkable for the same message but not for distinct messages. But the length of the signature grows linearly with the value of $t$. Also it is untraceable.
+The signature scheme described in section \ref{sec:daza} simulates a $(t,n)$-threshold signature scheme setting $d$ different $(t,r)$-threshold signature schemes. Not always a group of $t$ participants can compute a signature.
 
-Conclusions of the protocol described in section \ref{sec:inter}
-The signature is unlinkable, and untraceable considering that an adversary can corrupt at most one participant. The counterpart is that, since it is interactive, it requires an amount of interactions that is quadratic in $t$.
+If we suppose that the participants are homogeneously distributed in the partitions, we can say that the amount of participants in a part $\PP^i_j$ is approximately $g:=\frac{n}{r}$. The unlinkability of the scheme is determined by the value $g$ and must be large enough so that the linkability at the group level does not imply linkability at participant level.
+
+For random partitions, the probability to succeed at signing a message $p \simeq 1 - \frac{t^2}{2r}$ can be improved by setting large $r$, but there is a tradeoff with linkability as $g$ decreases. 
+
+For deterministic partitions there is a smart way set them s.t. any set of $t$ participants can perform a signature. This can be done for sufficiently large $d$. This results in the fact that the participants have to store $d$ key pairs and perform up to $d$ partial signatures to compute a valid signature, and the lower bound on $d$ grows with $t$ and $n$, and decreases with $r$. We have seen that for $r \rightarrow \infty$ with $g \rightarrow c$ then $d \rightarrow t$. Then, we can lower the value of $d$ by increasing $r$. Again, this results in a tradeoff with linkability since $g$ decreases.
+
+An important detail to comment is that to improve the efficiency of the signature for $d \geq 2$ (random or deterministic partitions), the participant could compute the partial signatures for the $d$ schemes, broadcast them, and eventualy one of the $d$ schemes will succeed. But, if no two participants share the same distribution over partitions, this identifies the participants. Thus, in this cases it is likely to avoid this improvement.
+
+The protocol described in section \ref{sec:chen} sets an anonymous $(t,n)$-threshold signature scheme where any set of $t$ participants can compute a signature based on a linkable group signature when signing the same message (but not linkable for signatures on distinct messages). The threshold is achieved by collecting $t$ unlinked signatures over the same message. This implies that the length of the signature grows linearly with $t$ and the verification complexity is quadratic on $t$ (since all $\binom{t}{2}$ pairs of signatures have to be checked).
+
+The protocol described in section \ref{sec:inter} sets an anonymous $(t,n)$-threshold signature scheme that is unlinkable, and untraceable whenever an adversary can corrupt at most one participant. It is compact since the length of the signature is the same as the length of the keys (intependent of $t$). The counterpart is that, since it is interactive, it requires an amount of interactions that is quadratic in $t$. It is a standard BLS signatures and can be verified in constant time (independent of $t$).
+
+The main problem of finding a compact anonymous threshold signature scheme that is unlinkable (or a proof of non-existence) still remains open.

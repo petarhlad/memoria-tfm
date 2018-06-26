@@ -11,11 +11,21 @@ After that, the signature scheme is newly setup by choosing a different secret $
 
 In this solution, the dealer (the one who gives the shares to the participants) can know which participant holds which share because the participants have to authenticate themselves to avoid a single participant getting multiple shares. We can approach this by running a $1$-out-of-$N$ OT protocol randomly choosing a share for sufficiently large $N \gg n$ s.t. the probability of two participants choosing the same share is sufficiently low. In this way, the dealer does not know which participants holds which share, but the execution of an OT protocol for large $N$ is computationaly way too expensive.
 
+A solution in this way for the e-voting case described in the introduction would be the following:
+\begin{itemize}[align = left, leftmargin=*, label={--}]
+\item Let $C_1, ..., C_k$ be the candidates to be voted, and let $\{P_1, ..., P_n\}$ be the set of voters. Each candidate needs at least $t$ votes to be validated. A voter can vote more than one candidate.
+\item Let $p$ be a sufficiently large prime. For each $C_i$, the system chooses a random secret $sk_i \in_R \ZZ_p$ and a random polynomial $Q_i(x) = \sum_{j=0}^{t-1} a_{i,j} x^j$ of degree $t-1$ where $a_{i,0} = sk_i$.
+\item Each candidate $P_j$ chooses $k$ random values $\alpha_{j,1}, ..., \alpha_{j,k} \in_R \ZZ_p$, then runs an oblivious polynomial evaluation protocol to learn the evaluations $Q_1(\alpha_{j,1}), ..., Q_k(\alpha_{j,k})$ from the system.
+\item If a voter $P_j$ wants to vote a candidate $C_i$, just needs to share the pair $(\alpha_{j,i},Q_i(\alpha_{j,i})$.
+\item At the end of the voting, if a candidate $C_i$ knows at least $t$ shares $(\alpha_{j,i},Q_i(\alpha_{j,i})$, he can interpolate $Q_i(x)$ to obtain the secret $sk_i = Q_i(0)$ and be validated.
+\end{itemize}
+
 \section{Threshold BLS signature}
+\label{sec:thr_bls}
 Using the BLS threshold signature scheme described in \ref{sec:shamir_sig} we can avoid linkability setting up a new secret after a signature is computed.
 
 After the signature scheme is set up with a new secret $sk$ and a new random polynomial $P(x)$, a participant $P_i$ chooses $\alpha_i \in_R \ZZ_p$ and learns $P(\alpha_i)$ running an oblivious polynomial evaluation protocol. In this way, the dealer does not learn the value of $\alpha_i$.
 
 One could think the following: since the participant actually does not need explicitly the value of $P(\alpha_i)$ but $H(m)^{P(\alpha_i)}$ to compute the partial signature on $m$, the participant can send the exponentiation of the powers of $\alpha_i$ to the dealer ($H(m)^{\alpha_i^j}$ for $j \in \{0, ..., t-1 \}$) and the dealer returns them exponentiated to the coefficients of the polynomial ($\left(H(m)^{\alpha_i^j}\right)^{a_j}$ for $j \in \{0, ..., t-1 \}$). In this way, the participant can compute: $$H(m)^{P(\alpha_i)} = \prod_{0\leq j \leq t-1} \left(H(m)^{\alpha_i^j}\right)^{a_j} = H(m)^{\sum_{0\leq j \leq t-1} a_j \alpha_i^j}$$.
 
-The issue with this last method is that the dealer knows $H(m)^{P(\alpha_i)}$, and
+The issue with this last method is that the dealer knows $H(m)^{P(\alpha_i)}$. Then, when the values $\alpha_i$ are published, the dealer can compute the $t^2$ possible partial signatures ${\sigma_{ij} = \left( H(m)^{P(\alpha_i)} \right)^{\lambda_j^P}}$. When the participants publish their partial signatures, the dealer can link them with the value  $H(m)^{P(\alpha_i)}$ and trace their identity.

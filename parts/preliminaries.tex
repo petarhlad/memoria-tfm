@@ -28,7 +28,7 @@ Oblivious polynomial evaluation is a protocol involving two parties, a sender wh
 
 Before explaining the first oblivious polynomial evaluation protocol we have to introduce the concept of oblivious transfer protocols.
 
-Oblivious Transfer (OT) protocols allow the sender to transmit part of its inputs to the receiver in a manner that: the sender does not receive more information than it is entitled, while the receiver is assured that the sender does not learn which part of the inputs it received. In a 1-out-of-$N$ OT protocol, the receiver can choose only one input of the sender between $N$ possible choices. \citeauthor{OT} desccribe in \cite{OT} an $n$-out-of-$N$ OT protocol where the receiver chooses $n$ inputs of the sender from $M$ possible choices.
+Oblivious Transfer (OT) protocols allow the sender to transmit part of its inputs to the receiver in a manner that: the sender does not receive more information than it is entitled, while the receiver is assured that the sender does not learn which part of the inputs it received. In a 1-out-of-$N$ OT protocol (introduced in \cite{BrassardCR86} by \citeauthor{BrassardCR86}), the receiver can choose only one input of the sender between $N$ possible choices. \citeauthor{OT} desccribe in \cite{OT} an $n$-out-of-$N$ improved OT protocol where the receiver chooses $n$ inputs of the sender from $M$ possible choices.
 
 \subsection{Noisy Polynomial problem}
 
@@ -259,6 +259,10 @@ The signature on $m$ is $\sigma = (c,s)$.
 \end{itemize}
 
 \section{Group Signatures}
+A group signature scheme is a signature scheme that allows a member of a group to anonymously sign a message on behalf of the group.
+
+In a group signature scheme there is a group manager, who is in charge of adding group members and has the ability to reveal the original signer when needed.
+
 (With linkability)
 Use of aggregation: group signatures. They are used to sign on behalf of the group, prove group membership.
 

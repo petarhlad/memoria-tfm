@@ -98,7 +98,7 @@ $$ d > \frac{\log \binom{n}{t}}{\log r^t - \log (r^t - t! \binom{r}{t})} $$
         \includegraphics[scale=1.5]{images/phf.jpg}
     \end{center}
 
-    \caption{Values for the lower bound of $d$ where $\frac{n}{r} = 10^3$}
+    \caption{Lower bound of $d$ for different values of $t$ with $\frac{n}{r} = 10^3$}
     \label{fig:phf} 
 \end{figure}
 
@@ -109,7 +109,7 @@ Clearly, the limit when $r \rightarrow \infty$ and $n = c \cdot r$ ($c$ a consta
 
 \section{Linkable Group Signature Scheme}
 \label{sec:chen}
-\citeauthor{ChenNW11} proposed a $(t,n)$-threshold signature scheme in \cite{ChenNW11} using a group signature scheme where you can link two signatures on the same message but cannot link signatures on different messages. As one can link signatures on the same message, the threshold signature is simply a set of $t$ valid signatures on the same message such that no two are linked.
+\citeauthor{ChenNW11} proposed a $(t,n)$-threshold signature scheme in \cite{ChenNW11} using a group signature scheme where you can link two signatures on the same message but cannot link signatures on different messages. As one can link signatures on the same message, the threshold signature is simply a set of $t$ valid signatures on the same message.
 \subsection{Description}
 \subsubsection*{Setup Algorithm}
 \begin{itemize}[align = left, leftmargin=*, label={--}]
