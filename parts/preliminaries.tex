@@ -261,16 +261,23 @@ The signature on $m$ is $\sigma = (c,s)$.
 \section{Group Signatures}
 A group signature scheme is a signature scheme that allows a member of a group to anonymously sign a message on behalf of the group.
 
-In a group signature scheme there is a group manager, who is in charge of adding group members and has the ability to reveal the original signer when needed.
+In a group signature scheme there is a group manager, who is in charge of adding group members.
 
-(With linkability)
-Use of aggregation: group signatures. They are used to sign on behalf of the group, prove group membership.
+A group signature scheme, together with the requirements of a simple signature scheme, should have the following properties:
+\begin{itemize}[align = left, leftmargin=*]
+\item[\textbf{Unforgeability}:] Only group members can perform valid group signatures.
+\item[\textbf{Anonymity}:] Given a message and its signature, the identity of the signer cannot be determined (except for maybe the group manager).
+\end{itemize}
 
-The easiest way is to give everyone the secret key, so they can sign. But this would let any colluded user to share the secret key to other parties, which is not admissible.
+There are other properties that some proposed group signature schemes have and that others do not:
+\begin{itemize}[align = left, leftmargin=*]
+\item[\textbf{Unlinkability}:] Given two messages and their signatures, one cannot tell if the signatures are from the same signer or not.
+\item[\textbf{Traceability}:] Given any valid signature, the group manager is able to trace which participant issued the signature.
+\end{itemize}
 
-Some group signatures need what is called a Dealer, which will deal with the keys.
+Some schemes have the unlinkability property. Other schemes can have the linkability property for any two signatures on two messages, or can have the linkability property for two signatures on the same message while signatures on different messages remain unlinkable.
 
-Examples of Group signatures:
+We are interested in group signature schemes without traceability and with linkability only for signatures on the same message, and unlinkability for signatures on distinct messages. An example of such group signature scheme is detailed in section \ref{sec:chen}.
 
 \section{Threshold Digital Signatures}
 A $(t,n)$-threshold signature scheme is a signature scheme in which any $t$ participants of the group $\PP = \{P_1, ..., P_n \}$ of participants is able to compute a signature on behalf of the group.
