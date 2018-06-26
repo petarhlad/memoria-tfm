@@ -3,9 +3,11 @@
 Here we describe three solutions for anonymous threshold signature schemes with non-linkability property.
 
 \section{Constant size anonymous threshold signature}
+
 \citeauthor*{DazaDSV09} proposed in \cite{DazaDSV09} an anonymous threshold signature scheme that sets a $(t,r)$-threshold signature scheme based on Shamir's secret sharing over a partition of the set $\PP$ of participants.
 
 \subsection{Description}
+\label{sec:daza}
 \subsubsection*{Setup Algorithm}
 \begin{itemize}[align = left, leftmargin=*, label={--}]
 \item Let $\PP = \{P_1 , \dots , P_n \}$ be the set of participants. Consider $d$ distinct partitions of $\PP$ into $r$ parts.
@@ -106,6 +108,7 @@ $$\frac{t \log \frac{n}{t}}{\log r + \log \frac{t(t-1)}{2}} \lesssim \frac{\log 
 Clearly, the limit when $r \rightarrow \infty$ and $n = c \cdot r$ ($c$ a constant), is $t$ on both sides of the inequality.
 
 \section{Linkable Group Signature Scheme}
+\label{sec:chen}
 \citeauthor{ChenNW11} proposed a $(t,n)$-threshold signature scheme in \cite{ChenNW11} using a group signature scheme where you can link two signatures on the same message but cannot link signatures on different messages. As one can link signatures on the same message, the threshold signature is simply a set of $t$ valid signatures on the same message such that no two are linked.
 \subsection{Description}
 \subsubsection*{Setup Algorithm}
@@ -246,6 +249,7 @@ The goal of this modification is to compute $a^\frac{-\alpha_j}{\alpha_i - \alph
 To compute $a^\frac{-\alpha_j}{\alpha_i - \alpha_j}$ we need participants $P_i,P_j$ and a third party $P_s$ that could be any other participant or a reliable party (like secure hardware).
 
 \subsection{Description}
+\label{sec:inter}
 \subsubsection*{Interaction}
 Let $a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}} \leftarrow \mathcal{B}(a,P_i,P_j)$ the protocol that outputs $a^{\frac{-\alpha_j}{\alpha_i - \alpha_j}}$ given $1 \neq a \in G$, a first participant $P_i$ and a second participant $P_j$.
 

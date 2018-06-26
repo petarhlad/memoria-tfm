@@ -1,4 +1,14 @@
 \chapter{Conclusions and future work}
 \label{chap:conc}
 
-Conclusions and future work
+Conclusions of the protocol described in section \ref{sec:daza}.
+The signature scheme, simulates a $(t,n)$-threshold signature scheme setting $d$ different $(t,r)$-threshold signature schemes.
+In the Daza scheme, not always a group of $t$ participants can compute a signature. For random partitions, the probability is somehow OK.
+For deterministic partitions, there are some values s.t. any set of $t$ participants can compute a signature, but the parameters grow large. $d$ is at least $t$ and it is not suitable for large values of $t$. The signature has the same length as the shares.
+$n/r$ measures the "unlinkability".
+
+Conclusions of the protocol described in section \ref{sec:chen} 
+Sets an anonymous $(t,n)$-threshold signature scheme where any set of $t$ participants can compute a signature. Where the signatures are linkable for the same message but not for distinct messages. But the length of the signature grows linearly with the value of $t$. Also it is untraceable.
+
+Conclusions of the protocol described in section \ref{sec:inter}
+The signature is unlinkable, and untraceable considering that an adversary can corrupt at most one participant. The counterpart is that, since it is interactive, it requires an amount of interactions that is quadratic in $t$.
