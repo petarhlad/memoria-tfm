@@ -45,9 +45,8 @@ $$
 
 \end{frame}
 
-\subsection{Oblivious Polynomial Evaluation}
 \begin{frame}{Oblivious Polynomial Evaluation}
-Oblivious Polynomial Evaluation is a protocol involving a sender who knows a polynomial $P \in \FF[x]$ and a receiver who knows a value $\alpha \in \FF$. At the end of the protocol, the receiver learns $P(\alpha)$ and the sender learns nothing.
+\textbf{Oblivious Polynomial Evaluation} is a protocol involving a sender who knows a polynomial $P \in \FF[x]$ and a receiver who knows a value $\alpha \in \FF$. At the end of the protocol, the receiver learns $P(\alpha)$ and the sender learns nothing.
 
 
 \begin{center}
@@ -62,7 +61,6 @@ Oblivious Polynomial Evaluation is a protocol involving a sender who knows a pol
 
 \end{frame}
 
-\subsection{Bilinear Pairings}
 \begin{frame}{Bilinear Pairings}
 Let $G_1$ and $G_2$ be two cyclic groups of prime order $q$. We write them multiplicativelly.
 \begin{center}
@@ -75,14 +73,14 @@ Decisional DH (DDH) & $g,g^a,g^b,g^c \in G_1$ & TRUE iif $c=ab$ \\ \hline
 Computational DH (CDH) & $g,g^a,g^b \in G_1$ &  $g^{ab}$  \\ \hline
 Decisional Co-DH (co-DDH) & 
         $\begin{array}{r}
-        h,h^b \in G_1 \\ 
-        g_2, g_2^a \in G_2
+        g,g^b \in G_1 \\ 
+        h, h^a \in G_2
         \end{array}$ & TRUE iif $a=b$ \\ \hline
 Computational Co-DH (co-CDH) & 
         $\begin{array}{r}
-        h \in G_1 \\
-        g_2, g_2^a \in G_2
-        \end{array}$ & $h^a$ \\ \hline
+        g \in G_1 \\
+        h, h^a \in G_2
+        \end{array}$ & $g^a$ \\ \hline
 
 \end{tabular}
 \end{center}
@@ -105,10 +103,24 @@ A Gap co-Diffie-Hellman (co-GDH) group pair $(G_1,G_2)$ is s.t. co-DDH is easy b
 \end{frame}
 
 
-
-\subsection{Secret Sharing}
 \begin{frame}{Secret Sharing}
 $\PP := \{ P_1, ..., P_n\}$ set of participants.
+\begin{defn}[Monotone Access Structure]
+A \textbf{Monotone Acess Structure} $\Gamma$ is the set of all subsets of $\PP$ that can recover the secret, which is monotone increasing. $$ A \in \Gamma, \quad A \subseteq A' \subseteq \PP \Rightarrow A' \in \Gamma$$
+\end{defn}
+\end{frame}
+
+\begin{frame}{Secret Sharing}
+\begin{defn}
+A \textbf{perfect secret sharing scheme}, with respect to a monotone acess structure $\Gamma$ satisfies:
+\begin{itemize}
+\item If a subset $A \in \Gamma$ of participants pool their shares, then can recover the secret.
+\item If a subset $A \notin \Gamma$ of participants pool their shares, they can determine nothing about the secret.
+\end{itemize}
+\end{defn}
+\begin{defn}
+An \textbf{anonymous secret sharing scheme} is a secret sharing scheme in which the secret can be reconstructed without the knowledge of which participants hold which shares.
+\end{defn}
 \end{frame}
 
 \begin{frame}{Shamir Secret Sharing}
@@ -127,15 +139,6 @@ $$ s = P(0) \leftarrow \sum_{j=1}^t y_{i_j} \prod_{\substack{k \in [t] \setminus
 
 \end{frame}
 
-\begin{frame}{Anonymous Secret Sharing}
-\begin{defn}
-An anonymous secret sharing scheme is a secret sharing scheme in which the secret can be reconstructed without the knowledge of which participants hold which shares.
-\end{defn}
-
-\end{frame}
-
-
-\subsection{Digital Signatures}
 \begin{frame}{Digital Signatures}
 A Digital Signature Scheme consists of 3 algorithms:
 \begin{itemize}
@@ -174,7 +177,6 @@ Sign: Given message $m \in \{0,1\}^\ast$, compute $h:= H(m) \in G_1$ and then co
 Verify: Given public key $y$, message $m$ and signature $\sigma$, compute $h = H(m)$ and verify that $e(\sigma,g_2) = e(h,y)$.
 \end{frame}
 
-\subsection{Group Signatures}
 \begin{frame}{Group Signatures}
 Allow a member of the group to anonymously sign a message on behalf of the group
 Properties:
@@ -191,10 +193,9 @@ Optional properties:
 
 \end{frame}
 
-\subsection{Threshold Digital Signatures}
 \begin{frame}{Threshold Digital Signatures}
 \begin{defn}
-A $(t,n)$-threshold signature scheme is a signature scheme in which any set of $t$ participants of the group is able to compute a signature on behalf of the group, and any subset of less than $t$ participants is unable to compute a valid signature.
+A $(t,n)$\textbf{-threshold signature scheme} is a signature scheme in which any set of $t$ participants of the group is able to compute a signature on behalf of the group, and any subset of less than $t$ participants is unable to compute a valid signature.
 \end{defn}
 
 \end{frame}

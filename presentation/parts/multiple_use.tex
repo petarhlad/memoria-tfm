@@ -283,3 +283,23 @@ Signature:
 $$\sigma(m) = \prod_{P_i \in P} \sigma_i(m)$$
 \end{frame}
 
+\begin{frame}
+Unlinkability:
+\begin{itemize}
+\item Scheme remains unlinkable while participants honest but curious.
+\item If an adversary corrupts $P_j, P_s$ she can interpolate $\alpha_i$ from $f_{ij},f_{is}$
+\item To allow an adversary to corrupt up to $\ell$ participants and still be unlinkable we can extend the algorithm:
+\begin{itemize}
+\item $f_k,g_k$ polynomials of degree $\ell+1$
+\item $2 \ell + 3$ participants: $P_i$,$P_j$, and $2\ell+1$ secure parties.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+Complexity
+\begin{itemize}
+\item $P_i$ to compute $\sigma_i$: $t-1$ interactions.
+\item To compute $\sigma$: $t(t-1)$ interactions.
+\end{itemize}
+\end{frame}
