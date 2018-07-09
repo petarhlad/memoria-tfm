@@ -64,7 +64,7 @@ Oblivious Polynomial Evaluation is a protocol involving a sender who knows a pol
 
 \subsection{Bilinear Pairings}
 \begin{frame}{Bilinear Pairings}
-
+Let $G_1$ and $G_2$ be two cyclic groups of prime order $q$. We write them multiplicativelly.
 \begin{center}
 \small
 \begin{tabular}{|c|c|c|}
@@ -98,12 +98,140 @@ A \textbf{bilinear map} is a map $e: G_1 \times G_2 \rightarrow G_T$ s.t.:
 \item Is non-degenerate: $e(g_1, g_2) \neq 1$.
 \end{itemize}
 \end{defn}
+\begin{defn}[Gap problem]
+A Gap co-Diffie-Hellman (co-GDH) group pair $(G_1,G_2)$ is s.t. co-DDH is easy but co-CDH is hard. When there is an efficient isomorphism $G_1 \cong G_2$ we say $G_1$ is a Gap group (GDH).
+
+\end{defn}
+\end{frame}
+
+
+
+\subsection{Secret Sharing}
+\begin{frame}{Secret Sharing}
+$\PP := \{ P_1, ..., P_n\}$ set of participants.
+\end{frame}
+
+\begin{frame}{Shamir Secret Sharing}
+Shamir (1979). Goal: Share a secret $s \in \ZZ_p$
+
+\begin{itemize}
+\item $s \in_R \ZZ_p$ the secret to be shared among $\PP$.
+\item Set $a_0 = s$ and choose $a_1, ... , a_{t-1} \in_R \ZZ_p$ with $a_{t-1} \neq 0$ \\
+        Set $P(x) = \sum_{i=0}^{t-1} a_i x^i$ polynomial of degree $t-1$
+\item Choose $\alpha_1, ..., \alpha_n \in_R \ZZ_p^\ast$ all distinct.
+\item Each participant $P_i \in \PP$ is given the share $(\alpha_i, y_i := P(\alpha_i)$
+\item The secret can be recovered with at least $t$ shares with polynomial interpolation:
+$$ s = P(0) \leftarrow \sum_{j=1}^t y_{i_j} \prod_{\substack{k \in [t] \setminus \{j\}}} \frac{-\alpha_{i_k}}{\alpha_{i_j}-\alpha_{i_k}}$$
+\end{itemize}
+
 
 \end{frame}
-\subsection{Secret Sharing}
+
+\begin{frame}{Anonymous Secret Sharing}
+\begin{defn}
+An anonymous secret sharing scheme is a secret sharing scheme in which the secret can be reconstructed without the knowledge of which participants hold which shares.
+\end{defn}
+
+\end{frame}
+
 
 \subsection{Digital Signatures}
+\begin{frame}{Digital Signatures}
+A Digital Signature Scheme consists of 3 algorithms:
+\begin{itemize}
+\item Key Generation:
+	\begin{itemize}
+	    \item Input: Security parameter.
+	    \item Output: Pair $(sk,pk)$ of secret and public keys.
+	\end{itemize}
+\item Sign:
+	\begin{itemize}
+	    \item Input: Message $m$, secret key $sk$.
+	    \item Output: Signature $\sigma$ on the message $m$.
+	\end{itemize}
+\item Verify:
+	\begin{itemize}
+	    \item Input: Message $m$, signature $\sigma$ on $m$, public key $pk$.
+	    \item Output: TRUE if the signature is valid. Otherwise FALSE.
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{BLS Signature Scheme}
+Boneh, Lynn and Shacham (2001)
+
+Let:
+\begin{itemize}
+\item[--] $(G_1,G_2)$ a bilinear group pair of prime order $p$
+\item[--] $g$ a generator of $G_1$
+\item[--] $e: G_1 \times G_2 \rightarrow G_T$ a bilinear pairing.
+\item[--] $H: \{0,1\}^\ast \rightarrow G_1$ a full-domain hash function.
+\end{itemize}
+Key generation: Choose secret key $x \in_R \ZZ_p$. Set public key $y:=g_2^x$.
+
+Sign: Given message $m \in \{0,1\}^\ast$, compute $h:= H(m) \in G_1$ and then compute the signature $\sigma:= h^x \in G_1$
+
+Verify: Given public key $y$, message $m$ and signature $\sigma$, compute $h = H(m)$ and verify that $e(\sigma,g_2) = e(h,y)$.
+\end{frame}
 
 \subsection{Group Signatures}
+\begin{frame}{Group Signatures}
+Allow a member of the group to anonymously sign a message on behalf of the group
+Properties:
+\begin{itemize}
+\item Unforgeability
+\item Anonymity
+\end{itemize}
+
+Optional properties:
+\begin{itemize}
+\item Unlinkability
+\item Traceability
+\end{itemize}
+
+\end{frame}
 
 \subsection{Threshold Digital Signatures}
+\begin{frame}{Threshold Digital Signatures}
+\begin{defn}
+A $(t,n)$-threshold signature scheme is a signature scheme in which any set of $t$ participants of the group is able to compute a signature on behalf of the group, and any subset of less than $t$ participants is unable to compute a valid signature.
+\end{defn}
+
+\end{frame}
+
+\begin{frame}{Example of Threshold Signature}
+Boldyreva (2003)
+
+Setup Algorithm:
+\begin{itemize}
+\item $\PP=\{P_i\}$ set of $n$ participants.
+\item $G$ a Gap group of large prime order $p > n$, and $g \in G$ a generator of the group.
+\item Choose $sk \in_R \ZZ_p$ the secret key. Set $pk = g^{sk}$ the public key.
+\item Set $a_0 = sk$ and choose $a_1, ..., a_{t-1} \in_R \ZZ_p$ with $a_{t-1} \neq 0$. \\
+        Set $P(x) = \sum_{i=0}^{t-1} a_i x^i$.
+\item Choose $\alpha_1, ..., \alpha_n \in_R \ZZ_p$ all distinct.
+\item Each participant $P_i \in \PP$ is given public key $pk_i = \alpha_i$ and secret key $sk_i = P(\alpha_i)$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+Sign Algorithm:
+\begin{itemize}
+\item $P = \{P_{i_1}, ... P_{i_t} \}$ set of $t$ participants to sign message $m$.
+\item Each $P_{i_j}$ computes partial signature $\sigma_{i_j}(m) = H(m)^{sk_{i_j}}$
+\item Each $P_{i_j}$ broadcasts the pair $(pk_{i_j}, \sigma_{i_j}(m))$
+\item The signature $\sigma$ on $m$ is computed:
+$$ \sigma(m) = \prod_{P_i \in P} \sigma_i (m)^{\lambda_i^{P}}= H(m)^{\sum_{P_i \in P} \lambda_i^P sk_i} = H(m)^{sk}$$
+where $\lambda_{i_j}^P := \prod_{k \in [t] \setminus \{j\}} \frac{-\alpha_{i_k}}{\alpha_{i_j} - \alpha_{i_k}}$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+Verify Algorithm:
+\begin{itemize}
+\item $e: G \times G \rightarrow G_t$ bilinear pairing.
+\item $\sigma$ signature on a message $m$.
+\item $\sigma$ is valid $\Leftrightarrow e(\sigma,g) = e(H(m),pk)$ 
+\end{itemize}
+\end{frame}

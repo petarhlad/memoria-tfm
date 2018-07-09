@@ -1,0 +1,51 @@
+\section{Multiple Use}
+\begin{frame}{Multiple Use: Anonymity with Non-Linkability}
+We describe three solutions:
+\begin{itemize}
+\item Constant Size Signature Scheme
+\item Linkable Group Signature Scheme
+\item Anonymous Interactive Protocol
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Constant Size Anonymous Threshold Signature}
+Daza et al. (2009)
+
+Setup Algorithm:
+\begin{itemize}
+\item Consider $d$ distinct partitions of the set of participants $\PP$ into $r$ parts: $\PP^i = \{\PP_1^i, ... , \PP_r^i\}$.
+\item For each partition $\PP^i, i \in [d]$ set up a $(t,r)$-Threshold BLS Signature scheme, and give same key pairs to all participants in the same $\PP_j^i$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+Sign Algorithm
+\begin{itemize}
+\item $\{ P_{i_1}, ... , P_{i_t}\}$ set of $t$ participants to sign a message $m$.
+\item Signature on $m$ over the i-th signature scheme is attempted. If succeeds, outputs $(m,\sigma,i)$.
+\item If signature fails (at least two participants have same secret key), a new signature over a distinct signature scheme is attempted.
+\item Eventually, the signature will succeed.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+Verify Algorithm:
+\begin{itemize}
+\item Signature $(m,\sigma,i)$.
+\item Signature valid $\Leftrightarrow e(\sigma,g) = e(H(m),pk_i)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Linkable Group Signature Scheme}
+Chen, Ng and Wang (2011)
+
+Setup Algorithm:
+\begin{itemize}
+\item Participant generates a pair $(sk,pk)$ of secret and public keys.
+\item The issuer gives the participant the credential $(A,B,C)$ that authenticates the participant's public key as member of the group.
+\end{itemize}
+
+\end{frame}

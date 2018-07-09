@@ -1,0 +1,28 @@
+\section{Single Use: Anonymity}
+\begin{frame}{Single Use: Anonymity}
+We now consider threshold signature schemes with:
+\begin{itemize}
+\item Non-traceability
+\item Linkability
+\end{itemize}
+
+We can avoid linkability by newly setting up the scheme after every signature.
+
+\end{frame}
+
+\begin{frame}{Solution with Anonymous Secret Sharing}
+\begin{itemize}
+\item Signature scheme with secret key $sk$.
+\item Share the secret key among the set of participants using a $(t,n)$-anonymous threshold secret sharing scheme.
+\item To compute a signature: a set of $t$ participants recover the secret key and compute the signature.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Solution with Anonymized Threshold BLS Signatures}
+\begin{itemize}
+\item Use BLS Threshold Signature Scheme: secret key $sk \in_R \ZZ_p$ and random polynomial $P(x)$ of degree $t-1$ s.t. $P(0) = sk$
+\item To avoid linkability set up the scheme after a signature is computed
+\item To reach anonymity with respect to the dealer (who deals the shares) the participants choose random $\alpha_i$ themselves and learn $P(\alpha_i)$ using Oblivious Polynomial Evaluation.
+\end{itemize}
+
+\end{frame}

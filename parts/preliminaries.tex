@@ -183,10 +183,10 @@ A classic example of a secret sharing scheme is the one described by \citeauthor
 
 \begin{itemize}[align = left, leftmargin=*, label={--}]
 \item Let $s \in_R \ZZ_p$ be the secret we want to share among the set of participants $\PP = \{P_1, ... , P_n \}$.
-\item Let $P(x) = a_0 + a_1 x + \cdots + a_{t-1} x^{t-1}$ of degree $t-1$ with $a_1, ..., a_{t-1} \in_R \ZZ_p$, $a_{t-1} \neq 0$ and $a_0 = s$. Let $\alpha_1, ... , \alpha_n \in_R \ZZ_p$ all distinct.
+\item Let $P(x) = a_0 + a_1 x + \cdots + a_{t-1} x^{t-1}$ of degree $t-1$ with $a_1, ..., a_{t-1} \in_R \ZZ_p$, $a_{t-1} \neq 0$ and $a_0 = s$. Let $\alpha_1, ... , \alpha_n \in_R \ZZ_p^\ast$ all distinct.
 \item Each participant $P_i \in \PP$ is given the share $(\alpha_i, y_i)$ where $y_i = P(\alpha_i)$.
 \item If a set $\{P_{i_1},...,P_{i_t}\}$ of $t$ participants want to recover the secret, they share their shares and compute
-$$ s = q(0) \leftarrow \sum_{j=1}^t y_{i_j} \prod_{\substack{k \in [t] \setminus \{j\}}} \frac{-\alpha_{i_k}}{\alpha_{i_j}-\alpha_{i_k}}$$
+$$ s = P(0) \leftarrow \sum_{j=1}^t y_{i_j} \prod_{\substack{k \in [t] \setminus \{j\}}} \frac{-\alpha_{i_k}}{\alpha_{i_j}-\alpha_{i_k}}$$
 \end{itemize}
 
 \subsection{Anonymous Secret Sharing}
@@ -301,7 +301,7 @@ This threshold signature scheme is based on the BLS scheme (see section \ref{sec
 
 Note that, for any set $\{P_{i_1}, ... , P_{i_t} \} = P \subseteq \PP$ of $t$ participants: $$sk = P(0) = \sum_{j = 1}^t s_{i_j} \lambda_{i_j}^P$$
 
-where $\lambda_{i_j}^P := \prod_{k \in [t] \setminus \{j\}} \frac{-\alpha_k}{\alpha_j - \alpha_k}$
+where $\lambda_{i_j}^P := \prod_{k \in [t] \setminus \{j\}} \frac{-\alpha_{i_k}}{\alpha_{i_j} - \alpha_{i_k}}$
 
 \subsubsection*{Signing Algorithm}
 \begin{itemize}[align = left, leftmargin=*, label={--}]
