@@ -1,0 +1,109 @@
+\section{Preliminaries}
+
+\begin{frame}{PKE scheme}
+A public key encryption scheme $PKE = (KG, \E, \D)$ consists of three probabilistic and polynomial time algorithms:
+\begin{itemize}
+\item Key generation $KG$:
+\begin{itemize}
+\item Input: Security parameter
+\item Output: Pair $(sk,pk)$ of secret and public keys.
+\end{itemize}
+\item Encription $\E$:
+\begin{itemize}
+\item Input: Plaintext $m$
+\item Output: Ciphertext $c = \E_{pk}(m)$
+\end{itemize}
+\item Decryprtion $\D$:
+\begin{itemize}
+\item Input: Ciphertext $c$
+\item Output: Plaintext $m = \D_{sk}(c)$
+\end{itemize}
+\end{itemize}
+
+For any pair $(sk,pk)$ and any plaintext $m$, it must hold $$m = \D_{sk} \left( \E_{pk} (m) \right)$$
+
+\end{frame}
+
+
+\begin{frame}{Homomorphic PKE}
+
+\begin{defn}[Homomorphic PKE]
+Let $\M$ be the set of plaintexts s.t. it is closed under an operation $\bullet$. Let $\C$ be the set of ciphertexts s.t. it is closed under an operation $\circ$. A PKE scheme $(KG, \E, \D)$ has the homomorphic property if
+$$
+\D_{sk} \big( \E_{pk}(m_1) \circ \E_{pk}(m_2) \big) \ = \ m_1 \bullet m_2 \quad \forall m_1,m_2 \in \M.
+$$
+\end{defn}
+
+\begin{rmk}
+If we write $\M$ additively and $\C$ multiplicativelly, for $a \in \ZZ^+$ we have:
+$$
+\D_{sk} \left( \E_{pk} (m)^a \right) = a \cdot m
+$$
+
+\end{rmk}
+
+
+\end{frame}
+
+\subsection{Oblivious Polynomial Evaluation}
+\begin{frame}{Oblivious Polynomial Evaluation}
+Oblivious Polynomial Evaluation is a protocol involving a sender who knows a polynomial $P \in \FF[x]$ and a receiver who knows a value $\alpha \in \FF$. At the end of the protocol, the receiver learns $P(\alpha)$ and the sender learns nothing.
+
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+             &    Sender & Receiver \\ \hline
+    Input    &    $P \in \FF[x]$ & $\alpha \in \FF$ \\ \hline
+    Output   &    -    &    $P(\alpha)$ \\ \hline
+
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+\subsection{Bilinear Pairings}
+\begin{frame}{Bilinear Pairings}
+
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|}
+\hline
+Problem name & Input & Output \\
+\hline
+Decisional DH (DDH) & $g,g^a,g^b,g^c \in G_1$ & TRUE iif $c=ab$ \\ \hline
+Computational DH (CDH) & $g,g^a,g^b \in G_1$ &  $g^{ab}$  \\ \hline
+Decisional Co-DH (co-DDH) & 
+        $\begin{array}{r}
+        h,h^b \in G_1 \\ 
+        g_2, g_2^a \in G_2
+        \end{array}$ & TRUE iif $a=b$ \\ \hline
+Computational Co-DH (co-CDH) & 
+        $\begin{array}{r}
+        h \in G_1 \\
+        g_2, g_2^a \in G_2
+        \end{array}$ & $h^a$ \\ \hline
+
+\end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{Bilinear Pairings}
+\begin{defn}[Bilinear map]
+Let $G_T$ be an additional group s.t. $ |G_1| = |G_2| = |G_T| $. 
+
+A \textbf{bilinear map} is a map $e: G_1 \times G_2 \rightarrow G_T$ s.t.:
+\begin{itemize}
+\item Is bilinear: $\forall u \in G_1$, $\forall v \in G_2$, $ \forall a,b \in \ZZ$, $$e(u^a, v^b) = e(u,v)^{ab} $$
+\item Is non-degenerate: $e(g_1, g_2) \neq 1$.
+\end{itemize}
+\end{defn}
+
+\end{frame}
+\subsection{Secret Sharing}
+
+\subsection{Digital Signatures}
+
+\subsection{Group Signatures}
+
+\subsection{Threshold Digital Signatures}
