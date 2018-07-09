@@ -45,7 +45,241 @@ Chen, Ng and Wang (2011)
 Setup Algorithm:
 \begin{itemize}
 \item Participant generates a pair $(sk,pk)$ of secret and public keys.
-\item The issuer gives the participant the credential $(A,B,C)$ that authenticates the participant's public key as member of the group.
+\item Issuer gives the participant a credential that certifies the participant's public key as member of the group.
+\end{itemize}
+
+Sign and Verify Algorithms:
+\begin{itemize}
+\item Based on BLS Signtarue Scheme to verify credentials
+\item Based on Schnorr Signature Scheme to verify the signature
 \end{itemize}
 
 \end{frame}
+
+\begin{frame}
+Threshold Checking Algorithm:
+\begin{itemize}
+\item List of $\ell$ valid signatures on $m$.
+\item Verify received signature $\sigma$
+\item Check if already received same signature, or same signer signed twice.
+\item If not a duplicate, add $\sigma$ to the list.
+\item When $\ell = t$, the threshold is reached, and the signature is the collection $\{\sigma_i\}$ of $t$ valid signatures on $m$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Anonymous Interactive Protocol}
+Set a Threshold BLS Signature Scheme
+
+Each participant $P_i$ owns pair $(\alpha_i, P(\alpha_i))$ of public and secret keys
+
+We propose an improvement on the signing algorithm s.t. the public key is not shared and cannot be obtained
+
+\end{frame}
+
+\begin{frame}{Interactive Protocol}
+\begin{itemize}
+\item Interaction between $P_i$, $P_j$ and additional secure party $P_s$.
+\item Goal: given $a \in G$, compute $a^{\frac{-\alpha_j}{\alpha_i-\alpha_j}}$ without sharing $\alpha_i, \alpha_j$.
+\item We will write: $a^{\frac{-\alpha_j}{\alpha_i-\alpha_j}} \leftarrow \mathcal{B}(a,P_i,P_j)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+        \begin{tikzpicture}
+            
+            \tikzset{vertex/.style = {draw=none,minimum size=1.5em}}
+            \tikzset{calc/.style = {rectangle, draw}}
+            \tikzset{edge/.style = {->,thick, > = latex'}}
+        
+            \node[vertex] (Pi) at (0,0) {$P_i$};
+            \node[vertex] (Pj) at (4,0) {$P_j$};
+            \node[vertex] (Ps) at (2,2.6) {$P_s$};
+            \node[vertex] (BC) at (2,1) {BC};
+            
+            \node[calc] (i) at (-1,-2){
+                \begin{tabular}{c}
+                    $x_i,x_j,x_s \in_R \ZZ_p^{\ast}$ \\
+                    $\gamma_{i,0}, \gamma_{i,1}, \gamma_{i,2}, \gamma_{i,3}, \gamma_{i,4} \in_R \ZZ_p$ \\
+                    $g_i(x) \leftarrow \gamma_{i,1} \cdot x + \gamma_{i,0}$ \\
+                    $f_i(x) \leftarrow \gamma_{i,2} \cdot x + \alpha_i$ \\
+                    $z_i(x) \leftarrow \gamma_{i,4} \cdot x + \gamma_{i,3}$
+                \end{tabular}
+            };
+            
+            \node[calc] (j) at (5,-2.2){
+                \begin{tabular}{c}
+                    $\gamma_{j,0}, \gamma_{j,1}, \gamma_{j,2}, \gamma_{j,3} , \gamma_{j,4} \in_R \ZZ_p$ \\
+                    $g_j(x) \leftarrow \gamma_{j,1} \cdot x + \gamma_{j,0}$ \\
+                    $f_j(x) \leftarrow \gamma_{j,2} \cdot x + \alpha_j$ \\
+                    $z_j(x) \leftarrow \gamma_{j,4} \cdot x + \gamma_{j,3}$
+                \end{tabular}
+            };
+            
+            \draw[edge] (Pi) to node[sloped,midway,above] {$x_i,x_j,x_s$} (BC);
+            
+        
+        \end{tikzpicture}
+        \end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+        \begin{tikzpicture}
+            
+            \tikzset{vertex/.style = {draw=none,minimum size=1.5em}}
+            \tikzset{calc/.style = {rectangle, draw}}
+            \tikzset{edge/.style = {->,thick, > = latex'}}
+        
+            \node[vertex] (Pi) at (0,0) {$P_i$};
+            \node[vertex] (Pj) at (4,0) {$P_j$};
+            \node[vertex] (Ps) at (2,2.6) {$P_s$};
+            \node[vertex] (BC) at (2,1) {BC};
+            
+            \node[calc] (i) at (-2,0) { \footnotesize
+                \begin{tabular}{c}
+                    For $k \in \{i,j,s\}$ \\
+                    $g_{ik} \leftarrow g_i(x_k)$ \\
+                    $f_{ik} \leftarrow f_i(x_k)$ \\
+                    $z_{ik} \leftarrow z_i(x_k)$
+                \end{tabular}
+            };
+            
+            \node[calc] (j) at (6,0) { \footnotesize
+                \begin{tabular}{c}
+                    For $k \in \{i,j,s\}$ \\
+                    $g_{jk} \leftarrow g_j(x_k)$ \\
+                    $f_{jk} \leftarrow f_j(x_k)$ \\
+                    $z_{jk} \leftarrow z_j(x_k)$
+                \end{tabular}
+            };
+            
+            \draw[edge] (Pi) to [bend left=10] node[sloped,midway,above] {$g_{ij},f_{ij},z_{ij}$} (Pj);
+            \draw[edge] (Pj) to [bend left=10] node[sloped,midway,below] {$g_{ji},f_{ji},z_{ji}$} (Pi);
+            \draw[edge] (Pi) to node[sloped,midway,above] {$g_{is},f_{is},z_{is}$} (Ps);
+            \draw[edge] (Pj) to node[sloped,midway,above] {$g_{js},f_{js},z_{js}$} (Ps);
+            
+        
+        \end{tikzpicture}
+        \end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+        \begin{tikzpicture}[node distance=0.5cm]
+            
+            \tikzset{vertex/.style = {draw=none,minimum size=1.5em}}
+            \tikzset{calc/.style = {rectangle, draw}}
+            \tikzset{edge/.style = {->,thick, > = latex'}}
+        
+            \node[vertex] (Pi) at (0,0) {$P_i$};
+            \node[vertex] (Pj) at (4,0) {$P_j$};
+            \node[vertex] (Ps) at (2,2.6) {$P_s$};
+            \node[vertex] (BC) at (2,1) {BC};
+            
+            \node[calc] (i) at (-1,-1){ \footnotesize
+                \begin{tabular}{c}
+                    $h_i \leftarrow (g_{ii} + g_{ji})(f_{ii} - f_{ji}) + z_{ii} + z_{ji}$ \\
+                    $h \leftarrow \sum_{k \in \{i,j,s\}} h_k \prod_{\ell \neq k} \frac{- x_\ell}{x_k - x_\ell}$
+                \end{tabular}
+            };
+            
+            \node[calc] (j) at (5,-1){ \footnotesize
+                \begin{tabular}{c}
+                    $h_j \leftarrow (g_{ij} + g_{jj}) (f_{ij} - f_{jj}) + z_{ij} + z_{jj}$ \\
+                    $h \leftarrow \sum_{k \in \{i,j,s\}} h_k \prod_{\ell \neq k} \frac{- x_\ell}{x_k - x_\ell}$
+                \end{tabular}
+            };
+            
+            \node[calc, above of = Ps] (s) { \footnotesize
+                \begin{tabular}{c}
+                    $h_s \leftarrow (g_{is} + g_{js}) (f_{is} - f_{js}) + z_{is} + z_{js}$
+                \end{tabular}
+            };
+            
+            \draw[edge] (Pi) to node[midway,below] {$h_i$} (BC);
+            \draw[edge] (Pj) to node[midway,below] {$h_j$} (BC);
+            \draw[edge] (Ps) to node[midway,right] {$h_s$} (BC);
+            
+        
+        \end{tikzpicture}
+        \end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+        \begin{tikzpicture}[node distance=0.5cm]
+            
+            \tikzset{vertex/.style = {draw=none,minimum size=1.5em}}
+            \tikzset{calc/.style = {rectangle, draw}}
+            \tikzset{edge/.style = {->,thick, > = latex'}}
+        
+            \node[vertex] (Pi) at (0,0) {$P_i$};
+            \node[vertex] (Pj) at (4,0) {$P_j$};
+            
+            \node[calc] (i) at (-2,0) { \footnotesize
+                \begin{tabular}{c}
+                    $A_i \leftarrow a^{\frac{1}{h}(g_{ii} + g_{ji})}$ \\
+                \end{tabular}
+            };
+            
+            \node[calc] (j) at (6,-0.3) { \footnotesize
+                \begin{tabular}{c}
+                    $A_j \leftarrow a^{\frac{1}{h}(g_{ij} + g_{jj})}$ \\
+                    $B \leftarrow A_i^{\frac{-x_j}{x_i-x_j}} A_j^{\frac{-x_i}{x_j-x_i}}$
+                \end{tabular}
+            };
+            
+            \draw[edge] (Pi) to node[sloped,midway,above] {$A_i$} (Pj);
+                        
+        
+        \end{tikzpicture}
+        \end{center}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+        \begin{tikzpicture}[node distance=0.5cm]
+            
+            \tikzset{vertex/.style = {draw=none,minimum size=1.5em}}
+            \tikzset{calc/.style = {rectangle, draw}}
+            \tikzset{edge/.style = {->,thick, > = latex'}}
+        
+            \node[vertex] (Pi) at (0,0) {$P_i$};
+            \node[vertex] (Pj) at (4,0) {$P_j$};
+                        
+            \node[calc] (i) at (-2,0) { \footnotesize
+                \begin{tabular}{c}
+                    Output: $B'$
+                \end{tabular}
+            };
+            
+            \node[calc] (j) at (6,0) { \footnotesize
+                \begin{tabular}{c}
+                    $B' \leftarrow B^{-\alpha_j}$
+                \end{tabular}
+            };
+            
+            \draw[edge] (Pj) to node[sloped,midway,above] {$B'$} (Pi);
+                        
+        
+        \end{tikzpicture}
+        \end{center}
+        Where
+        $$B' = a^{\frac{-\alpha_j}{\alpha_i-\alpha_j}}$$
+\end{frame}
+
+\begin{frame}
+Partial Signature:
+\begin{itemize}
+\item Let $P = \{P_i, P_{j_1}, ..., P_{j_{t-1}}\}$
+\item Let $a_0 = H(m)^{s_i}$
+\item For $k\in [t]$ compute 
+$$a_k \leftarrow \mathcal{B}(a_{k-1},P_i,P_{j_k})$$
+\item $\sigma_i(m) = a_t = H(m)^{s_i \prod_{i\in [t-1]} \frac{-\alpha_{j_k}}{\alpha_{j_i}-\alpha_{j_k}}}$
+\end{itemize}
+
+Signature:
+$$\sigma(m) = \prod_{P_i \in P} \sigma_i(m)$$
+\end{frame}
+
