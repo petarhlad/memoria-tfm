@@ -20,7 +20,7 @@ Setup Algorithm:
 
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Constant Size Anonymous Threshold Signature}
 Sign Algorithm
 \begin{itemize}
 \item $\{ P_{i_1}, ... , P_{i_t}\}$ set of $t$ participants to sign a message $m$.
@@ -28,10 +28,6 @@ Sign Algorithm
 \item If signature fails (at least two participants have same secret key), a new signature over a distinct signature scheme is attempted.
 \item Eventually, the signature will succeed.
 \end{itemize}
-
-\end{frame}
-
-\begin{frame}
 Verify Algorithm:
 \begin{itemize}
 \item Signature $(m,\sigma,i)$.
@@ -84,7 +80,7 @@ We propose an improvement on the signing algorithm s.t. the public key is not sh
 \end{itemize}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Interactive Protocol}
 \begin{center}
         \begin{tikzpicture}
             
@@ -123,7 +119,7 @@ We propose an improvement on the signing algorithm s.t. the public key is not sh
         \end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Interactive Protocol}
 \begin{center}
         \begin{tikzpicture}
             
@@ -164,7 +160,7 @@ We propose an improvement on the signing algorithm s.t. the public key is not sh
         \end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Interactive Protocol}
 \begin{center}
         \begin{tikzpicture}[node distance=0.5cm]
             
@@ -206,7 +202,7 @@ We propose an improvement on the signing algorithm s.t. the public key is not sh
         \end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Interactive Protocol}
 \begin{center}
         \begin{tikzpicture}[node distance=0.5cm]
             
@@ -237,7 +233,7 @@ We propose an improvement on the signing algorithm s.t. the public key is not sh
         \end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Interactive Protocol}
 \begin{center}
         \begin{tikzpicture}[node distance=0.5cm]
             
@@ -269,7 +265,7 @@ We propose an improvement on the signing algorithm s.t. the public key is not sh
         $$B' = a^{\frac{-\alpha_j}{\alpha_i-\alpha_j}}$$
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Interactive Protocol}
 Partial Signature:
 \begin{itemize}
 \item Let $P = \{P_i, P_{j_1}, ..., P_{j_{t-1}}\}$
@@ -283,7 +279,7 @@ Signature:
 $$\sigma(m) = \prod_{P_i \in P} \sigma_i(m)$$
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Anonymous Interactive Protocol}
 Unlinkability:
 \begin{itemize}
 \item Scheme remains unlinkable while participants honest but curious.
@@ -294,9 +290,6 @@ Unlinkability:
 \item $2 \ell + 3$ participants: $P_i$,$P_j$, and $2\ell+1$ secure parties.
 \end{itemize}
 \end{itemize}
-\end{frame}
-
-\begin{frame}
 Complexity
 \begin{itemize}
 \item $P_i$ to compute $\sigma_i$: $t-1$ interactions.

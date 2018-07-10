@@ -1,4 +1,31 @@
 \section{Conclusions}
-\begin{frame}
+\begin{frame}{Conclusions}
+Constant Size Anonymous Threshold Signature:
+\begin{itemize}
+\item Compact signature.
+\item Unlinkability determined by the amount of participants in each part of the partitions.
+\item Not always a group of $t$ participants can compute a signature, but we can control the probability of not succeeding.
+\end{itemize}
 
+Linkable Group Signature Scheme:
+\begin{itemize}
+\item Any set of $t$ participants can compute a signature.
+\item Threshold is achieved by collecting $t$ unlinked signatures on the same message.
+\item Length of the signature grows linearly with $t$.
+\item Verification complexity is quadratic on $t$.
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}{Conclusions}
+Anonymous Interactive Protocol:
+\begin{itemize}
+\item Unlinkable and untraceable whenever an adversary can corrupt at most one participant.
+\item Compact signature.
+\item Requires big amount of interactions: quadratic in $t$.
+\item Constant signature verification time (independent of $t$).
+\end{itemize}
+
+Main problem of finding compact, non-interactive, unlinkable anonymous threshold siganture scheme remains open.
 \end{frame}
