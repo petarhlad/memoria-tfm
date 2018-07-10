@@ -21,7 +21,6 @@ We can avoid linkability by newly setting up the scheme after every signature.
 \begin{frame}{Solution with Anonymized Threshold BLS Signatures}
 \begin{itemize}
 \item Use BLS Threshold Signature Scheme: secret key $sk \in_R \ZZ_p$ and random polynomial $P(x)$ of degree $t-1$ s.t. $P(0) = sk$
-\item To avoid linkability set up the scheme after a signature is computed
 \item To reach anonymity with respect to the dealer (who deals the shares) the participants choose random $\alpha_i$ themselves and learn $P(\alpha_i)$ using Oblivious Polynomial Evaluation.
 \end{itemize}
 

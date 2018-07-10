@@ -131,7 +131,7 @@ Shamir (1979). Goal: Share a secret $s \in \ZZ_p$
 \item Set $a_0 = s$ and choose $a_1, ... , a_{t-1} \in_R \ZZ_p$ with $a_{t-1} \neq 0$ \\
         Set $P(x) = \sum_{i=0}^{t-1} a_i x^i$ polynomial of degree $t-1$
 \item Choose $\alpha_1, ..., \alpha_n \in_R \ZZ_p^\ast$ all distinct.
-\item Each participant $P_i \in \PP$ is given the share $(\alpha_i, y_i := P(\alpha_i)$
+\item Each participant $P_i \in \PP$ is given the share $(\alpha_i, y_i := P(\alpha_i))$
 \item The secret can be recovered with at least $t$ shares with polynomial interpolation:
 $$ s = P(0) \leftarrow \sum_{j=1}^t y_{i_j} \prod_{\substack{k \in [t] \setminus \{j\}}} \frac{-\alpha_{i_k}}{\alpha_{i_j}-\alpha_{i_k}}$$
 \end{itemize}
@@ -210,7 +210,7 @@ Setup Algorithm:
 \item Choose $sk \in_R \ZZ_p$ the secret key. Set $pk = g^{sk}$ the public key.
 \item Set $a_0 = sk$ and choose $a_1, ..., a_{t-1} \in_R \ZZ_p$ with $a_{t-1} \neq 0$. \\
         Set $P(x) = \sum_{i=0}^{t-1} a_i x^i$.
-\item Choose $\alpha_1, ..., \alpha_n \in_R \ZZ_p$ all distinct.
+\item Choose $\alpha_1, ..., \alpha_n \in_R \ZZ_p^\ast$ all distinct.
 \item Each participant $P_i \in \PP$ is given public key $pk_i = \alpha_i$ and secret key $sk_i = P(\alpha_i)$
 \end{itemize}
 
